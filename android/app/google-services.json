@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "997653559531",
+    "project_id": "mhs-application",
+    "storage_bucket": "mhs-application.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:997653559531:android:6b8ba984d626c793f1a6ae",
+        "android_client_info": {
+          "package_name": "com.example.mhs_application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGuKPR91_VUUmDuHWKeFxzf7czwQpC1Xg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
