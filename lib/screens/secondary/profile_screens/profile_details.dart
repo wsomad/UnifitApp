@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:mhs_application/components/profile_components/grid_badge.dart';
+import 'package:mhs_application/components/profile_components/grid_post.dart';
 import 'package:mhs_application/models/student.dart';
 import 'package:mhs_application/services/user_database.dart';
 import 'package:mhs_application/shared/constant.dart';
@@ -14,10 +17,9 @@ class ProfileDetails extends StatefulWidget {
 class _ProfileDetailsState extends State<ProfileDetails> {
   final List<Widget> tabs = const [
     Tab(
-      icon: Icon(
-        Icons.photo_size_select_actual_outlined
-        //color: greenColor,
-      ),
+      icon: Icon(Icons.grid_on_rounded
+          //color: greenColor,
+          ),
     ),
     Tab(
       icon: Icon(
@@ -97,7 +99,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                       ],
                     ),
                     const SizedBox(
-                      height: 20,
+                      height: 10,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(right: 10),
@@ -106,7 +108,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                         children: [
                           Image.asset(
                             image,
-                            width: 110,
+                            width: 120,
                             fit: BoxFit.cover,
                           ),
                           Row(
@@ -183,29 +185,34 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                 ),
               ),
               TabBar(
-                tabs: tabs,
+                tabs: const [
+                  Tab(
+                    icon: Icon(Icons.grid_on_rounded
+                        //color: greenColor,
+                        ),
+                  ),
+                  Tab(
+                    icon: Icon(
+                      Icons.bookmark_outline_rounded,
+                      //color: greyColor,
+                    ),
+                  )
+                ],
                 indicatorColor: greenColor,
                 labelColor: greenColor,
                 unselectedLabelColor: greyColor,
+                indicatorSize: TabBarIndicatorSize.label,
               ),
-              /*GridView.builder(
-                itemCount: 5,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                scrollDirection: Axis.vertical,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(1.0),
-                    child: Container(
-                      height: 50,
-                      width: 50,
-                      color: greenColor,
-                      child: Center(child: Text('Post ${index+1}')),
-                    ),
-                  );
-                },
-              ),*/
+              const SizedBox(
+                height: 1000,
+                child: TabBarView(
+                    children: [
+                      GridProfilePost(),
+                      GridProfileBadge()
+                    ],
+                  ),
+              ),
+              
             ],
           );
         }),
