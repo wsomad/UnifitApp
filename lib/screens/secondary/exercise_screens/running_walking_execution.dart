@@ -3,9 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mhs_application/components/exercise_components/bottom_sheets/rest_bottom_sheet.dart';
 import 'package:mhs_application/models/exercise.dart';
+import 'package:mhs_application/models/exercise_execution.dart';
+import 'package:mhs_application/models/student.dart';
 import 'package:mhs_application/models/time.dart';
+import 'package:mhs_application/services/database.dart';
 import 'package:mhs_application/shared/constant.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:provider/provider.dart';
 
 class RunningWalkingExecution extends StatefulWidget {
   final Exercise selectedExercise;
@@ -24,16 +28,21 @@ class RunningWalkingExecution extends StatefulWidget {
 }
 
 class _RunningWalkingExecutionState extends State<RunningWalkingExecution> {
+  final DatabaseService _databaseService = DatabaseService();
+  int seconds = 0;
   int second = 0;
   int minute = 0;
   int hour = 0;
   bool isTimerRunning = false;
   bool isBottomSheetOpen = false;
-  late Timer timer;
+  Timer timer = Timer(Duration.zero, () { });
 
   @override
   Widget build(BuildContext context) {
+    final studentUser = Provider.of<Student?>(context);
+    
     Exercise exercise = widget.selectedExercise;
+    var exerciseId = exercise.id!;
     var exerciseName = exercise.name!;
     var exerciseLevel = exercise.level!;
     var exerciseEquipment = exercise.equipment!;
@@ -189,7 +198,25 @@ class _RunningWalkingExecutionState extends State<RunningWalkingExecution> {
                       Padding(
                         padding: const EdgeInsets.only(top: 10),
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            stopTimer();
+
+                            String formattedDuration = _formatDuration(Duration(seconds: second));
+                            double totalTimes = _calculateTotalMinutes(formattedDuration);
+                            String totalTimeFormatted = totalTimes.toStringAsFixed(2);
+                            double totalTime = double.parse(totalTimeFormatted);
+                            var day = DateTime.now().weekday;
+                            var week = ExerciseExecution().getCurrentWeek();
+
+                            print(day);
+
+                            ExerciseExecution execution = ExerciseExecution(
+                              exerciseName: exerciseName,
+                              totalTime: totalTime,
+                            );
+
+                            await _databaseService.updateData('students/${studentUser!.uid}/execute/week $week/day $day/$exerciseId', execution.toJsonDate());
+                          },
                           style: inputLargeButtonDecoration,
                           child: Text(
                             'Done',
@@ -207,6 +234,14 @@ class _RunningWalkingExecutionState extends State<RunningWalkingExecution> {
         ],
       ),
     );
+  }
+
+  double _calculateTotalMinutes(String formattedDuration) {
+    List<String> parts = formattedDuration.split(':');
+    double hours = double.parse(parts[0]);
+    double minutes = double.parse(parts[1]);
+    double seconds = double.parse(parts[2]);
+    return (hours * 60) + minutes + (seconds / 60);
   }
 
   String _formatDuration(Duration duration) {
@@ -240,6 +275,7 @@ class _RunningWalkingExecutionState extends State<RunningWalkingExecution> {
 
   void stopTimer() {
     timer.cancel();
+    isTimerRunning = false;
   }
 
   void showBottomSheet() {

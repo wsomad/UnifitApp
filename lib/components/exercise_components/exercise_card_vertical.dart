@@ -38,12 +38,6 @@ class _ExerciseCardVerticalState extends State<ExerciseCardVertical> {
       ..shuffle();
     return randomFilteredExercises.take(count).toList();
   }
-/*
-  @override
-  void initState() {
-    super.initState();
-    displayExercises = _displayRandomExercises(widget.exerciseList, 10);
-  }*/
 
   @override
   Widget build(BuildContext context) {

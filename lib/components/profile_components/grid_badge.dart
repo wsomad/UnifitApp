@@ -10,6 +10,24 @@ class GridProfileBadge extends StatefulWidget {
 class _GridProfileBadgeState extends State<GridProfileBadge> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return GridView.builder(
+      gridDelegate:
+          const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: 12,
+      itemBuilder: (BuildContext context, index) {
+        String image = "assets/images/15_minutes_workout.png";
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          child: Container(
+            child: Image.asset(
+              image,
+            )
+            //Center(child: Text('${index + 1}')),
+          ),
+        );
+      },
+    );
   }
 }

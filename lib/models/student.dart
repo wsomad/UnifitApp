@@ -63,7 +63,7 @@ class Student {
         : null,
       dateOfBirth: fromJson['dateOfBirth'] != null 
         ? Date.fromJson(fromJson['dateOfBirth'] as Map<String, dynamic>) 
-        : Date(day: 1, month: 1, year: 2000),
+        : DateTime.now() as Date?,
       weight: fromJson['weight'] != null 
         ? (fromJson['weight'] as num?)?.toDouble() ?? 0
         : null,

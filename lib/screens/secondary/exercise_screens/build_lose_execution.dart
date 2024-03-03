@@ -3,26 +3,34 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mhs_application/components/exercise_components/build_lose_list.dart';
 import 'package:mhs_application/components/exercise_components/bottom_sheets/rest_bottom_sheet.dart';
+import 'package:mhs_application/models/date.dart';
 import 'package:mhs_application/models/exercise.dart';
+import 'package:mhs_application/models/exercise_execution.dart';
+import 'package:mhs_application/models/student.dart';
+import 'package:mhs_application/services/database.dart';
 import 'package:mhs_application/shared/constant.dart';
+import 'package:provider/provider.dart';
 
 class BuildLoseExecution extends StatefulWidget {
   final Exercise selectedExercise;
   final int set;
   final int rep;
 
-  const BuildLoseExecution(
-      {super.key,
-      required this.selectedExercise,
-      required this.set,
-      required this.rep});
+  const BuildLoseExecution({
+    super.key,
+    required this.selectedExercise,
+    required this.set,
+    required this.rep,
+  });
 
   @override
   State<BuildLoseExecution> createState() => _BuildLoseExecutionState();
 }
 
 class _BuildLoseExecutionState extends State<BuildLoseExecution> {
-  late Timer timer;
+  final DatabaseService _databaseService = DatabaseService();
+  Timer timer = Timer(Duration.zero, () { });
+  int exerciseIndex = 1;
   int seconds = 0;
   bool isTimerRunning = false;
   bool isTimerPaused = false;
@@ -32,7 +40,10 @@ class _BuildLoseExecutionState extends State<BuildLoseExecution> {
 
   @override
   Widget build(BuildContext context) {
+    final studentUser = Provider.of<Student?>(context);
+    
     Exercise exercise = widget.selectedExercise;
+    var exerciseId = exercise.id!;
     var exerciseName = exercise.name!;
     var exerciseImage = 'assets/images/Barbell_Bench_Press_-_Medium_Grip_0.jpg';
     var exerciseLevel = exercise.level!;
@@ -156,10 +167,9 @@ class _BuildLoseExecutionState extends State<BuildLoseExecution> {
                       onPressed: () {
                         if (!isTimerRunning) {
                           startTimer();
-                        } 
-                        else {
+                        } else {
                           showBottomSheet();
-                        } 
+                        }
                       },
                       style: inputTinyButtonDecoration.copyWith(
                         backgroundColor:
@@ -195,7 +205,25 @@ class _BuildLoseExecutionState extends State<BuildLoseExecution> {
                   height: 20,
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    stopTimer();
+
+                    String formattedDuration = _formatDuration(Duration(seconds: seconds));
+                    double totalTimes = _calculateTotalMinutes(formattedDuration);
+                    String totalTimeFormatted = totalTimes.toStringAsFixed(2);
+                    double totalTime = double.parse(totalTimeFormatted);
+                    var day = DateTime.now().weekday;
+                    var week = ExerciseExecution().getCurrentWeek();
+
+                    print(day);
+
+                    ExerciseExecution execution = ExerciseExecution(
+                      exerciseName: exerciseName,
+                      totalTime: totalTime,
+                    );
+
+                    await _databaseService.updateData('students/${studentUser!.uid}/execute/week $week/day $day/$exerciseId', execution.toJsonDate());
+                  },
                   style: inputLargeButtonDecoration,
                   child: Text(
                     'Done',
@@ -215,14 +243,19 @@ class _BuildLoseExecutionState extends State<BuildLoseExecution> {
     const oneSec = Duration(seconds: 1);
     timer = Timer.periodic(oneSec, (Timer t) {
       if (!isTimerPaused) {
-      setState(() {
-        seconds++;
-      });
-    }
+        setState(() {
+          seconds++;
+        });
+      }
     });
     setState(() {
       isTimerRunning = true;
     });
+  }
+
+  void stopTimer() {
+    timer.cancel();
+    isTimerRunning = false;
   }
 
   void showBottomSheet() {
@@ -238,15 +271,15 @@ class _BuildLoseExecutionState extends State<BuildLoseExecution> {
       builder: (context) {
         return SingleChildScrollView(
           child: Container(
-            width: MediaQuery.sizeOf(context).width,
-            height: 300,
-            decoration: BoxDecoration(
-              color: whiteColor,
-              borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-            ),
-            child:const RestBottomSheet()
-          ),
+              width: MediaQuery.sizeOf(context).width,
+              height: 300,
+              decoration: BoxDecoration(
+                color: whiteColor,
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10)),
+              ),
+              child: const RestBottomSheet()),
         );
       },
     ).whenComplete(() {
@@ -262,6 +295,14 @@ class _BuildLoseExecutionState extends State<BuildLoseExecution> {
     String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
     String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
     return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
+  }
+
+  double _calculateTotalMinutes(String formattedDuration) {
+    List<String> parts = formattedDuration.split(':');
+    double hours = double.parse(parts[0]);
+    double minutes = double.parse(parts[1]);
+    double seconds = double.parse(parts[2]);
+    return (hours * 60) + minutes + (seconds / 60);
   }
 
   @override

@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:mhs_application/services/exercise_database.dart';
 import 'package:mhs_application/shared/bottom_navigation_bar.dart';
 import 'package:mhs_application/components/exercise_components/exercise_card_vertical.dart';
 import 'package:mhs_application/models/exercise.dart';
@@ -23,6 +24,8 @@ class ExerciseCollection extends StatefulWidget {
 
 class _ExerciseCollectionState extends State<ExerciseCollection> {
   final TextEditingController searchController = TextEditingController();
+  Future<List<Exercise>> fetchExercise =
+        ExerciseDatabaseService().readExerciseData() as Future<List<Exercise>>;
   List<Exercise> filteredExercises = [];
 
   @override
@@ -41,13 +44,10 @@ class _ExerciseCollectionState extends State<ExerciseCollection> {
 
   void searchExercise() {
     String searchingQuery = searchController.text.toLowerCase();
-    List<Exercise> filteredList = widget.exerciseList
+    List<Exercise> filteredList = filteredExercises
         .where((exercise) =>
-            //searchingQuery.contains(exercise.name!) ||
-            //searchingQuery.contains(exercise.equipment!)
-            exercise.name!.toLowerCase().contains(searchingQuery) ||
-            //exercise.level!.toLowerCase().contains(searchingQuery) ||
-            exercise.equipment!.toLowerCase().contains(searchingQuery)
+            searchingQuery.contains(exercise.name!) ||
+            searchingQuery.contains(exercise.equipment!)
             )
         .toList();
     
@@ -56,6 +56,8 @@ class _ExerciseCollectionState extends State<ExerciseCollection> {
     setState(() {
       filteredExercises = filteredList;
     });
+
+    print(filteredExercises);
   }
   
 
