@@ -38,6 +38,8 @@ class ExerciseExecution extends Exercise {
   int getCurrentWeek() {
     DateTime now = DateTime.now();
     int totalDays = now.difference(DateTime(now.year, 1, 1)).inDays;
+    print('total days $totalDays');
+    print(((totalDays - 1) ~/ 7) % 4 + 1);
     return ((totalDays - 1) ~/ 7) % 4 + 1;
   }
 

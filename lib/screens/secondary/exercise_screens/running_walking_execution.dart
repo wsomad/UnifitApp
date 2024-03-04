@@ -205,15 +205,20 @@ class _RunningWalkingExecutionState extends State<RunningWalkingExecution> {
                             double totalTimes = _calculateTotalMinutes(formattedDuration);
                             String totalTimeFormatted = totalTimes.toStringAsFixed(2);
                             double totalTime = double.parse(totalTimeFormatted);
-                            var day = DateTime.now().weekday;
-                            var week = ExerciseExecution().getCurrentWeek();
 
-                            print(day);
+                            
 
                             ExerciseExecution execution = ExerciseExecution(
                               exerciseName: exerciseName,
                               totalTime: totalTime,
                             );
+                            execution.updateCurrentWeek();
+
+                            var day = DateTime.now().weekday;
+                            var week = execution.getCurrentWeek();
+
+                            print('day $day');
+                            print('week $week');
 
                             await _databaseService.updateData('students/${studentUser!.uid}/execute/week $week/day $day/$exerciseId', execution.toJsonDate());
                           },

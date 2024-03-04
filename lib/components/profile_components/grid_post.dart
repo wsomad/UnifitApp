@@ -9,12 +9,14 @@ class GridProfilePost extends StatefulWidget {
 }
 
 class _GridProfilePostState extends State<GridProfilePost> {
+  var exerciseImage =
+            'assets/images/Barbell_Bench_Press_-_Medium_Grip_0.jpg';
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-      itemCount: 10,
+      itemCount: 20,
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       scrollDirection: Axis.vertical,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
       itemBuilder: (context, index) {
@@ -24,7 +26,11 @@ class _GridProfilePostState extends State<GridProfilePost> {
             height: 50,
             width: 50,
             color: greenColor,
-            child: Center(child: Text('Post ${index+1}')),
+            child: Image.asset(
+              exerciseImage,
+              fit: BoxFit.cover,
+            )
+            //Center(child: Text('Post ${index+1}')),
           ),
         );
       },
