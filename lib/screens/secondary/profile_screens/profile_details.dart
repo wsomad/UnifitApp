@@ -5,6 +5,7 @@ import 'package:mhs_application/components/profile_components/grid_badge.dart';
 import 'package:mhs_application/components/profile_components/grid_post.dart';
 import 'package:mhs_application/components/profile_components/profile_bottom_sheet.dart';
 import 'package:mhs_application/models/student.dart';
+import 'package:mhs_application/screens/secondary/notifications.dart';
 import 'package:mhs_application/services/user_database.dart';
 import 'package:mhs_application/shared/constant.dart';
 import 'package:provider/provider.dart';
@@ -44,6 +45,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
           final data = snapshot.data;
 
           var username = data?.username ?? 'null';
+          var faculty = data?.faculty ?? 'null';
           var studentWeight = data?.weight;
           num weight = studentWeight ?? 0.0;
           var studentHeight = data?.height;
@@ -58,6 +60,9 @@ class _ProfileDetailsState extends State<ProfileDetails> {
           num bmi = studentBmi;
           String bmiValue = bmi.toStringAsFixed(2);
           var image = 'assets/images/Profile.png';
+
+          var total = data?.countTotalExercise;
+          print('exercise $total');
 
           return Builder(
             builder: (context) {
@@ -84,10 +89,20 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                               padding: const EdgeInsets.only(bottom: 10),
                               child: Row(
                                 children: [
-                                  Icon(
-                                    Icons.notifications_none_rounded,
-                                    color: greenColor,
-                                    size: 28,
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context,  rootNavigator: true).push(
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                          const Notifications(),
+                                        ),
+                                      );
+                                    },
+                                    child: Icon(
+                                      Icons.notifications_none_rounded,
+                                      color: greenColor,
+                                      size: 28,
+                                    ),
                                   ),
                                   const SizedBox(
                                     width: 20,
@@ -110,84 +125,75 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                         const SizedBox(
                           height: 10,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Image.asset(
-                                image,
-                                width: 120,
-                                fit: BoxFit.cover,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  const Column(
-                                    children: [
-                                      Text(
-                                        '0',
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        'Posts',
-                                        style: TextStyle(fontSize: 14),
-                                      )
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    width: 40,
-                                  ),
-                                  const Column(
-                                    children: [
-                                      Text(
-                                        '10',
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        'Rank',
-                                        style: TextStyle(fontSize: 14),
-                                      )
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    width: 40,
-                                  ),
-                                  Column(
-                                    children: [
-                                      Text(
-                                        bmiValue,
-                                        style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      const Text(
-                                        'BMI',
-                                        style: TextStyle(fontSize: 14),
-                                      )
-                                    ],
-                                  )
-                                ],
-                              )
-                            ],
-                          ),
+                        Image.asset(
+                          image,
+                          width: 130,
+                          fit: BoxFit.cover,
                         ),
                         const SizedBox(
                           height: 20,
                         ),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            username,
-                            style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
+                        Text(
+                          '${username} | ${faculty}',
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
                         ),
-                        
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Column(
+                              children: [
+                                Text(
+                                  '0',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  'Posts',
+                                  style: TextStyle(fontSize: 14),
+                                )
+                              ],
+                            ),
+                            const SizedBox(
+                              width: 40,
+                            ),
+                            const Column(
+                              children: [
+                                Text(
+                                  '10',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  'Rank',
+                                  style: TextStyle(fontSize: 14),
+                                )
+                              ],
+                            ),
+                            const SizedBox(
+                              width: 40,
+                            ),
+                            Column(
+                              children: [
+                                Text(
+                                  bmiValue,
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const Text(
+                                  'BMI',
+                                  style: TextStyle(fontSize: 14),
+                                )
+                              ],
+                            )
+                          ],
+                        ),                        
                         const SizedBox(
                           height: 20,
                         ),
@@ -203,7 +209,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                       ),
                       Tab(
                         icon: Icon(
-                          Icons.bookmark_outline_rounded,
+                          Icons.stars,
                           //color: greyColor,
                         ),
                       )
@@ -234,10 +240,11 @@ class _ProfileDetailsState extends State<ProfileDetails> {
   void showBottomSheet() {
     showModalBottomSheet(
       context: context,
+      useRootNavigator: true,
       builder: (context) {
         return Container(
           width: MediaQuery.sizeOf(context).width,
-          height: 200,
+          height: 280,
           decoration: BoxDecoration(
             color: whiteColor,
             borderRadius: const BorderRadius.only(

@@ -253,12 +253,10 @@ class _PersonalState extends State<Personal> {
 
                       await _databaseService.updateData('students/${studentUser!.uid}/personal', student.toJson());
 
-                      if (mounted) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => const BottomNavigationBarShared()),
-                        );
-                      }
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const BottomNavigationBarShared()),
+                      );
                     },
                     style: inputLargeButtonDecoration,
                     child: Text(

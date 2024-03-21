@@ -19,7 +19,7 @@ class _GridProfileBadgeState extends State<GridProfileBadge> {
       itemBuilder: (BuildContext context, index) {
         String image = "assets/images/15_minutes_workout.png";
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           child: Container(
             child: Image.asset(
               image,

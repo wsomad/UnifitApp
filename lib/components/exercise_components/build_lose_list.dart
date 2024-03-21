@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:mhs_application/shared/constant.dart';
 
@@ -112,6 +114,19 @@ class _BuildLoseListState extends State<BuildLoseList> {
                           });
                           if (isSetDone[index]) {
                             print('Done set ${index + 1}!');
+                            ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Completed set ${index + 1}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold
+                                ),
+                              ),
+                              duration: const Duration(seconds: 5),
+                              backgroundColor: greenColor,
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
                           } else {
                             print('Undone set ${index + 1}!');
                           }

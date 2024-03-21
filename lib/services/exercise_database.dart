@@ -28,4 +28,14 @@ class ExerciseDatabaseService {
     });
     return controller.stream.first;
   }
+
+  Future<Exercise> fetchRunningWalking(String programName) async {
+    List<Exercise> exercise =
+        await ExerciseDatabaseService().readExerciseData();
+
+    Exercise selectedExercise =
+        exercise.firstWhere((exercise) => exercise.name == programName);
+
+    return selectedExercise;
+  }
 }

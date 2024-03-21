@@ -19,6 +19,11 @@ class DatabaseService<T> {
     await _databaseReference.child(dataPath).update(data);
   }
 
+  //
+  Future<void> addData(String dataPath, Map<String, dynamic> data) async {
+    _databaseReference.child(dataPath).push().set(data);
+  }
+
   // Add a list of data to a specific node without affecting existing data
   Future<void> addListData(String dataPath, List<Map<String, dynamic>> dataList) async {
     for (var data in dataList) {

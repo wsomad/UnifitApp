@@ -3,6 +3,7 @@ import 'package:mhs_application/models/exercise.dart';
 import 'package:mhs_application/models/time.dart';
 import 'package:mhs_application/screens/secondary/exercise_screens/running_walking_execution.dart';
 import 'package:mhs_application/shared/constant.dart';
+import 'package:mhs_application/shared/custom_alert_dialog.dart';
 
 class RunningWalkingBottomSheet extends StatefulWidget {
   final String programName;
@@ -105,16 +106,29 @@ class _RunningWalkingBottomSheetState extends State<RunningWalkingBottomSheet> {
                     print('Duration: ${selectedHours}hours ${selectedMinutes}min ${selectedSeconds}sec');
                     _timeDetails = TimeDetails(hours: selectedHours,minutes: selectedMinutes, seconds: selectedSeconds);
                     
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => RunningWalkingExecution(
-                          programName: widget.programName,
-                          selectedExercise: widget.selectedExercise,
-                          timeDetails: _timeDetails,
+                    if (selectedHours == 0 && selectedMinutes == 0 && selectedSeconds == 0) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return const CustomAlertDialog(
+                            title: 'Warning',
+                            message: "You can't proceed by leaving your time duration empty.",
+                          );
+                        },
+                      );
+                    }
+                    else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RunningWalkingExecution(
+                            programName: widget.programName,
+                            selectedExercise: widget.selectedExercise,
+                            timeDetails: _timeDetails,
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    }
                   },
                   style: inputSmallButtonDecoration.copyWith(
                       backgroundColor: MaterialStatePropertyAll(greenColor)),

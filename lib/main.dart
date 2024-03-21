@@ -19,7 +19,6 @@ void main() async {
       projectId: 'mhs-application',
     ))
   : await Firebase.initializeApp();
-
   runApp(const MyApp());
 }
 
@@ -43,7 +42,6 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(textTheme: GoogleFonts.rudaTextTheme()),
-        title: 'Flutter Demo',
         home: const Wrapper(),
       ),
     );

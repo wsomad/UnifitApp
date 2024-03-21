@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:mhs_application/shared/constant.dart';
 
@@ -14,31 +16,48 @@ class CustomAlertDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(title),
+      title: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(message),
+          Text(
+            message,
+            textAlign: TextAlign.justify,
+            style: const TextStyle(fontSize: 14),
+          ),
+          const SizedBox(
+            height: 10,
+          )
         ],
       ),
       actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: Text(
-            'OK',
-            style: TextStyle(
-              color: greenColor,
-              fontWeight: FontWeight.bold
+        Center(
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            style: inputLargeButtonDecoration,
+            child: Text(
+              'OK',
+              style: TextStyle(
+                color: whiteColor,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
             ),
           ),
         ),
       ],
       backgroundColor: whiteColor,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5.0),
+        borderRadius: BorderRadius.circular(10.0),
       ),
     );
   }

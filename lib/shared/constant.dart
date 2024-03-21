@@ -29,6 +29,26 @@ var textInputDecoration = InputDecoration(
       )),
 );
 
+// Small TextFormField
+var smallTextInputDecoration = InputDecoration(
+  contentPadding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
+  fillColor: Colors.white,
+  filled: true,
+  enabledBorder: OutlineInputBorder(
+    borderRadius: const BorderRadius.all(Radius.circular(10)),
+    borderSide: BorderSide(
+      color: greyColor,
+      width: 2,
+    ),
+  ),
+  focusedBorder: OutlineInputBorder(
+      borderRadius: const BorderRadius.all(Radius.circular(10)),
+      borderSide: BorderSide(
+        color: greenColor,
+        width: 2,
+      )),
+);
+
 // Dropdown
 var dropDownDecoration = InputDecoration(
   enabledBorder: OutlineInputBorder(

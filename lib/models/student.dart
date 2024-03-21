@@ -12,6 +12,12 @@ class Student {
   double? weight;
   double? height;
   String? faculty;
+  String? targetNoOfExercise;
+  String? targetTimeSpent;
+  String? targetCaloriesBurned;
+  int? countTotalExercise;
+  int? countTotalTime;
+  int? countTotalCalories;
   
   // Create a constructor
   Student({
@@ -24,6 +30,12 @@ class Student {
     this.weight,
     this.height,
     this.faculty,
+    this.targetNoOfExercise,
+    this.targetTimeSpent,
+    this.targetCaloriesBurned,
+    this.countTotalExercise,
+    this.countTotalTime,
+    this.countTotalCalories,
   });
 
   // (Json Serialization)
@@ -39,6 +51,12 @@ class Student {
       'weight': weight,
       'height': height,
       'faculty': faculty,
+      'targetNoOfExercise': targetNoOfExercise,
+      'targetTimeSpent': targetTimeSpent,
+      'targetCaloriesBurned': targetCaloriesBurned,
+      'countTotalExercise': countTotalExercise,
+      'countTotalTime': countTotalTime,
+      'countTotalCalories': countTotalCalories,
     };
   }
 
@@ -55,15 +73,13 @@ class Student {
       password: fromJson['password'] != null 
         ? fromJson['password'] as String 
         : null,
-      username: fromJson['username'] != null 
-        ? fromJson['username'] as String 
-        : null,
+      username: fromJson['username'],
       gender: fromJson['gender'] != null 
         ? fromJson['gender'] as String 
         : null,
       dateOfBirth: fromJson['dateOfBirth'] != null 
         ? Date.fromJson(fromJson['dateOfBirth'] as Map<String, dynamic>) 
-        : DateTime.now() as Date?,
+        : null,
       weight: fromJson['weight'] != null 
         ? (fromJson['weight'] as num?)?.toDouble() ?? 0
         : null,
@@ -73,6 +89,12 @@ class Student {
       faculty: fromJson['faculty'] != null 
         ? fromJson['faculty'] as String 
         : null,
+      targetNoOfExercise: fromJson['targetNoOfExercise'],
+      targetTimeSpent: fromJson['targetTimeSpent'],
+      targetCaloriesBurned: fromJson['targetCaloriesBurned'],
+      countTotalExercise: fromJson['countTotalExercise'],
+      countTotalTime: fromJson['countTotalTime'],
+      countTotalCalories: fromJson['countTotalCalories'],
     );
   }
 }

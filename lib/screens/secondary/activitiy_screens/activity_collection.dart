@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mhs_application/screens/secondary/notifications.dart';
 import 'package:mhs_application/shared/constant.dart';
 
 class ActivityCollection extends StatefulWidget {
@@ -32,10 +33,20 @@ class _ActivityCollectionState extends State<ActivityCollection> {
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 0, 0, 10),
-                    child: Icon(
-                      Icons.notifications_none_rounded,
-                      color: greenColor,
-                      size: 28,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context,  rootNavigator: true).push(
+                          MaterialPageRoute(
+                            builder: (_) =>
+                            const Notifications(),
+                          ),
+                        );
+                      },
+                      child: Icon(
+                        Icons.notifications_none_rounded,
+                        color: greenColor,
+                        size: 28,
+                      ),
                     ),
                   ),
                 ],

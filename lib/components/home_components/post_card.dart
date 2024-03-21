@@ -58,28 +58,16 @@ class _PostCardState extends State<PostCard> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 10),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 18,
-                                backgroundImage: AssetImage(image),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                name,
-                                style: TextStyle(
-                                  color: whiteColor,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
+                          CircleAvatar(
+                            radius: 18,
+                            backgroundImage: AssetImage(image),
+                          ),
+                          const SizedBox(
+                            width: 10,
                           ),
                           Text(
-                            faculty,
+                            '$name | $faculty',
                             style: TextStyle(
                               color: whiteColor,
                               fontWeight: FontWeight.bold,

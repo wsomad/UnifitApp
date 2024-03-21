@@ -30,6 +30,13 @@ class _BottomNavigationBarSharedState extends State<BottomNavigationBarShared> {
     '/profile'
   ];
 
+  final List<String> screenname = [
+    'Home',
+    'Exercise',
+    'Activity',
+    'Profile'
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,7 +99,8 @@ class _BottomNavigationBarSharedState extends State<BottomNavigationBarShared> {
             onTabChange: (index) {
               setState(() {
                 _currentIndex = index;
-                print('User select $_currentIndex');
+                var screenIndex = screenname[_currentIndex];
+                print('User select $screenIndex screen');
               });
             },
           ),

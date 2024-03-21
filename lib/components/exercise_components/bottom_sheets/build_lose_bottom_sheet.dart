@@ -7,7 +7,10 @@ import 'package:mhs_application/shared/constant.dart';
 class BuildLoseBottomSheet extends StatefulWidget {
   final Exercise selectedExercise;
 
-  const BuildLoseBottomSheet({super.key, required this.selectedExercise,});
+  const BuildLoseBottomSheet({
+    super.key,
+    required this.selectedExercise,
+  });
 
   @override
   State<BuildLoseBottomSheet> createState() => _BuildLoseBottomSheetState();
@@ -55,8 +58,9 @@ class _BuildLoseBottomSheetState extends State<BuildLoseBottomSheet> {
                       }
                     },
                     decoration: textInputDecoration.copyWith(
-                      hintText: 'Number of set(s)',
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      hintText: '0',
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 20.0),
                     ),
                   ),
                 )
@@ -84,8 +88,9 @@ class _BuildLoseBottomSheetState extends State<BuildLoseBottomSheet> {
                     },
                     decoration: textInputDecoration.copyWith(
                       //suffixText: 'No. of set(s)',
-                      hintText: 'Number of rep(s)',
-                      contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
+                      hintText: '0',
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 20.0),
                     ),
                   ),
                 )
@@ -121,18 +126,17 @@ class _BuildLoseBottomSheetState extends State<BuildLoseBottomSheet> {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return const CustomAlertDialog(title: 'Ooops!', message: 'Seems like your set or rep is empty');
+                          return const CustomAlertDialog(
+                            title: 'Warning',
+                            message: "You can't proceed by leaving your set or rep empty.",
+                          );
                         },
                       );
-                    }
-                    else {
-                      print('$rep reps');
-                      print('$set sets');
+                    } else {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                          BuildLoseExecution(
+                          builder: (context) => BuildLoseExecution(
                             selectedExercise: widget.selectedExercise,
                             rep: rep,
                             set: set,
