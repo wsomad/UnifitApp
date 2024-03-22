@@ -65,7 +65,7 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
 
     return StreamBuilder<Student>(
       stream: StudentDatabaseService(uid: student.uid)
-          .readCurrentStudentData('students/${student.uid}/personal'),
+          .readCurrentStudentData('${student.uid}','personal'),
       builder: ((context, snapshot) {
         // Student Data
         final data = snapshot.data;

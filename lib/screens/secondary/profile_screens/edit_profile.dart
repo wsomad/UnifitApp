@@ -25,7 +25,7 @@ class _EditProfileState extends State<EditProfile> {
 
     return StreamBuilder<Student?>(
       stream: StudentDatabaseService(uid: studentUser.uid)
-          .readCurrentStudentData('students/${studentUser.uid}/personal'),
+          .readCurrentStudentData('${studentUser.uid}','personal'),
       builder: (context, snapshot) {
         final student = snapshot.data;
 

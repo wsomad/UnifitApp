@@ -18,6 +18,7 @@ class Student {
   int? countTotalExercise;
   int? countTotalTime;
   int? countTotalCalories;
+  int? leaderboardRank;
   
   // Create a constructor
   Student({

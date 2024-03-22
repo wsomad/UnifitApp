@@ -7,19 +7,31 @@ import 'package:mhs_application/models/exercise_execution.dart';
 import 'package:mhs_application/models/student.dart';
 
 class StudentDatabaseService {
+  // Create a nullable uid variable
   final String? uid;
+
+  // Create a constructor with uid parameter
   StudentDatabaseService({this.uid});
 
+  // Create an instance of database named studentReference 
   final DatabaseReference studentReference = FirebaseDatabase.instance.ref();
-  ExerciseExecution execution = ExerciseExecution();
 
-  Stream<Student> readCurrentStudentData(String dataPath) {
-    final DatabaseReference studentReference =
-        FirebaseDatabase.instance.ref(dataPath);
+  // Create an instance named execution
+  ExerciseExecution execution = ExerciseExecution();
+  
+  // Create a Student stream to read only current student data with userID and sourcePath parameter
+  Stream<Student> readCurrentStudentData(String userId, String sourcePath) {
+
+    // Assign a variable to hold the reference for student data
+    var ref = studentReference.child('students/$userId/$sourcePath');
     
-    return studentReference.onValue.map((event) {
+    // By referring to the assign variable, any processes (event) happened is mapped 
+    return ref.onValue.map((event) {
       try {
+        // Check the availability 
+        // It stored student data in snapshot object after a process
         if (event.snapshot.value != null) {
+          // Initially, we 
           Map<Object?, Object?> rawData = event.snapshot.value as Map<Object?, Object?>;
 
           Map<String, dynamic> data = json.decode(json.encode(rawData));
@@ -38,7 +50,12 @@ class StudentDatabaseService {
 
   // 
   Future<void> storeStudentExerciseData(String userId, String exerciseId, int currentWeek, int currentDay, Map<String, dynamic> exerciseData) async {
-    await studentReference.child('students/$userId/progress/week $currentWeek/day $currentDay, $exerciseId').update(exerciseData);
+    try {
+      await studentReference.child('students/$userId/progress/week $currentWeek/day $currentDay/$exerciseId').update(exerciseData);
+    } catch (e) {
+      print('Error storing student exercise data: $e');
+      rethrow;
+    }
   }
 
   Future<void> shiftWeekNumber(String userId) async {
@@ -63,38 +80,14 @@ class StudentDatabaseService {
         await studentReference.child('students/$userId/progress/week $i').remove();
       }
     }
-    
-/*
-    if(event.snapshot.value != null) {
-      for (int i = currentWeek - 1; i >= 1; i--) {
-        await studentReference.child('students/$userId/progress/week $currentWeek').update({
-        'week ': {i+1},
-      });
-        //await studentReference.child(path)
-        //await StudentDatabaseService().moveData('students/$userId/progress/week $i', 'students/$userId/progress/week ${i + 2}');
-      }
-    }
-    await studentReference.child('students/$userId/progress/week $currentWeek').update({
-        'week ': 1,
-      });*/
   }
-
+/*
   Future<void> storeShiftProcess(String userId, int currentWeek, String exerciseId, Map<String, dynamic> exerciseData) async {
     await storeStudentExerciseData(userId, exerciseId, currentWeek, exerciseData);
     await shiftWeekNumber(userId);
   }
-
-  Future<void> moveData(String userId, int index, int destinationIndex) async {
-    /*
-    final DatabaseReference studentReference =
-        FirebaseDatabase.instance.ref();
-
-    final event = await studentReference.child(sourcePath).once();
-    if(event.snapshot.value != null) {
-      await studentReference.child(destinationPath).set(event.snapshot.value);
-      await studentReference.child(sourcePath).remove();
-    }*/
-    
+*/
+  Future<void> moveData(String userId, int index, int destinationIndex) async {    
     // Source path
     final event = await studentReference.child('students/$userId/progress/week $index').once();
     if (event.snapshot.value != null) {
@@ -105,9 +98,6 @@ class StudentDatabaseService {
   }
 
   Future<void> removeData(String userId, int index) async {
-    /*final DatabaseReference studentReference =
-        FirebaseDatabase.instance.ref();
-    await studentReference.child(path).remove();*/
     // Get total weeks
     int weekIndex = execution.getCurrentWeek();
     int weekTotal = execution.getTotalWeeks();

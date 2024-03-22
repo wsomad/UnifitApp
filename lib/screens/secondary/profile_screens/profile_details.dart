@@ -40,7 +40,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
       length: 2,
       child: StreamBuilder<Student>(
         stream: StudentDatabaseService(uid: student.uid)
-            .readCurrentStudentData('students/${student.uid}/personal'),
+            .readCurrentStudentData('${student.uid}','personal'),
         builder: ((context, snapshot) {
           final data = snapshot.data;
 

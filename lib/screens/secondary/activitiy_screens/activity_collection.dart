@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mhs_application/screens/secondary/activitiy_screens/leaderboard.dart';
 import 'package:mhs_application/screens/secondary/notifications.dart';
 import 'package:mhs_application/shared/constant.dart';
 
@@ -177,7 +178,7 @@ class _ActivityCollectionState extends State<ActivityCollection> {
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        'View BMI History',
+                        'View Full Leaderboard Rank',
                         style: TextStyle(
                           fontSize: 14,
                         ),
@@ -186,7 +187,11 @@ class _ActivityCollectionState extends State<ActivityCollection> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-
+                      Navigator.of(context, rootNavigator: true).push(
+                        MaterialPageRoute(builder: (context) {
+                          return const Leaderboard();
+                        },)
+                      );
                     },
                     style: inputTinyButtonDecoration,
                     child: Text(

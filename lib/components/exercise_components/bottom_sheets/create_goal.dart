@@ -34,7 +34,7 @@ class _CreateGoalState extends State<CreateGoal> {
     return StreamBuilder<Student?>(
       stream: StudentDatabaseService(uid: studentUser!.uid)
                         .readCurrentStudentData(
-                            'students/${studentUser.uid}/execute/week $week/day $day/Goals'),
+                            '${studentUser.uid}','execute/week $week/day $day/Goals'),
       builder: (context, snapshot) {
       
       final student = snapshot.data;
@@ -148,7 +148,7 @@ class _CreateGoalState extends State<CreateGoal> {
                 var day = DateTime.now().weekday;
                 var week = ExerciseExecution().getCurrentWeek();
       
-                DatabaseReference ref = FirebaseDatabase.instance.ref('students/${studentUser.uid}/execute/week $week/day $day/Goals');
+                DatabaseReference ref = FirebaseDatabase.instance.ref('students/${studentUser.uid}/progress/week $week/day $day/Goals');
                 if(_formKey.currentState!.validate()){
                   if (exerciseController.text.isNotEmpty) {
                     widget.addGoal(exerciseController.text);

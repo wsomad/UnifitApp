@@ -163,7 +163,7 @@ class _ProgramCardVerticalState extends State<ProgramCardVertical> {
             child: StreamBuilder<Student?>(
                 stream: StudentDatabaseService(uid: studentUser!.uid)
                     .readCurrentStudentData(
-                        'students/${studentUser.uid}/execute/week $week/day $day/Goals'),
+                        '${studentUser.uid}','/progress/week $week/day $day/Goals'),
                 builder: (context, snapshot) {
                   final targetData = snapshot.data;
 

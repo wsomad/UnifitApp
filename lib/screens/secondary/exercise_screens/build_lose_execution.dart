@@ -8,7 +8,6 @@ import 'package:mhs_application/models/exercise.dart';
 import 'package:mhs_application/models/exercise_execution.dart';
 import 'package:mhs_application/models/student.dart';
 import 'package:mhs_application/screens/secondary/exercise_screens/exercise_output.dart';
-import 'package:mhs_application/services/database.dart';
 import 'package:mhs_application/services/user_database.dart';
 import 'package:mhs_application/shared/constant.dart';
 import 'package:provider/provider.dart';
@@ -30,7 +29,6 @@ class BuildLoseExecution extends StatefulWidget {
 }
 
 class _BuildLoseExecutionState extends State<BuildLoseExecution> {
-  final DatabaseService _databaseService = DatabaseService();
   Timer timer = Timer(Duration.zero, () { });
   int exerciseIndex = 1;
   int seconds = 0;
@@ -40,7 +38,7 @@ class _BuildLoseExecutionState extends State<BuildLoseExecution> {
   Color setButtonColor = greenColor;
   Color setOutlineColor = greenColor;
   var day = DateTime.now().weekday;
-  var week = ExerciseExecution().getCurrentWeek();
+  var currentWeek = ExerciseExecution().getCurrentWeek();
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +71,7 @@ class _BuildLoseExecutionState extends State<BuildLoseExecution> {
     return StreamBuilder<Student>(
       stream: StudentDatabaseService(uid: studentUser!.uid)
                         .readCurrentStudentData(
-                            'students/${studentUser.uid}/execute/week $week/day $day/Goals'),
+                            '${studentUser.uid}','progress/week $currentWeek/day $day/Goals'),
       builder: (context, snapshot) {
         
         final data = snapshot.data;
@@ -235,6 +233,7 @@ class _BuildLoseExecutionState extends State<BuildLoseExecution> {
                         String totalTimeFormatted = totalTimes.toStringAsFixed(2);
                         double totalTime = double.parse(totalTimeFormatted);
                         int total = totalTime.toInt();
+                        int maxWeek = 13;
                         countTotalExercise++;
                         countTotalTime+=total;
           
@@ -243,20 +242,22 @@ class _BuildLoseExecutionState extends State<BuildLoseExecution> {
                           totalTime: totalTime,
                         );
 
+                        // Original code
+                        //await _databaseService.updateData('students/${studentUser.uid}/progress/week $week/day $day/$exerciseId', execution.toJsonDate());
+                        
                         // Store current exercise details
-                        await _databaseService.updateData('students/${studentUser.uid}/progress/week $week/day $day/$exerciseId', execution.toJsonDate());
-                                  
-                        DatabaseReference ref = FirebaseDatabase.instance.ref('students/${studentUser.uid}/progress/week $week/day $day/Goals');
+                        // Improvised code
+                        await StudentDatabaseService().storeStudentExerciseData('${studentUser.uid}', exerciseId, currentWeek, day, execution.toJsonDate());
+
+                        DatabaseReference ref = FirebaseDatabase.instance.ref('students/${studentUser.uid}/progress/week $currentWeek/day $day/Goals');
                         await ref.update({
                           'countTotalExercise': countTotalExercise,
                           'countTotalTime': countTotalTime,
                         });
+                        print('Total Exercise: $countTotalExercise');
 
-                        int length = await StudentDatabaseService().getDataLength('students/${studentUser.uid}/progress');
-
-                        int currentWeek = execution.getCurrentWeek();
                         if (currentWeek == 4) {
-                          if (length == currentWeek) {
+                          if (maxWeek == currentWeek) {
                             for (var i = 10; i <= 13; i++) {
                               await StudentDatabaseService().removeData('${studentUser.uid}', i);
                             }
