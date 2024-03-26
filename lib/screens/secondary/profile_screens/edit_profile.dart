@@ -1,6 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mhs_application/models/student.dart';
 import 'package:mhs_application/services/user_database.dart';
 import 'package:mhs_application/shared/constant.dart';
@@ -19,7 +18,6 @@ class _EditProfileState extends State<EditProfile> {
     final studentUser = Provider.of<Student>(context);
     TextEditingController usernameController = TextEditingController();
     TextEditingController facultyController = TextEditingController();
-    TextEditingController genderController = TextEditingController();
     TextEditingController weightController = TextEditingController();
     TextEditingController heightController = TextEditingController();
 
@@ -28,6 +26,8 @@ class _EditProfileState extends State<EditProfile> {
           .readCurrentStudentData('${studentUser.uid}','personal'),
       builder: (context, snapshot) {
         final student = snapshot.data;
+
+        //var bmi = student?.weight/(student?.height * student?.height);
 
         return Scaffold(
           body: ListView(
@@ -235,6 +235,52 @@ class _EditProfileState extends State<EditProfile> {
                           controller: heightController,
                           decoration: InputDecoration(
                             hintText: (student?.height)?.toStringAsFixed(2),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: greenColor, width: 2),
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: greenColor, width: 2),
+                            ),
+                          ),
+                          style: const TextStyle(fontSize: 16),
+                          onChanged: (text) {
+                            // Handle the text change
+                          },
+                        )
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'BMI',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 16),
+                            ),
+                            Text(
+                              'Classification',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 16),
+                            ),
+                          ],
+                        ),
+                        TextField(
+                          maxLines: 1,
+                          controller: heightController,
+                          decoration: InputDecoration(
+                            prefixText: '12',
+                            prefixStyle: TextStyle(
+                              color: blackColor
+                            ),
+                            suffixText: '45',
                             focusedBorder: UnderlineInputBorder(
                               borderSide:
                                   BorderSide(color: greenColor, width: 2),

@@ -77,13 +77,13 @@ class _ProfileBottomSheetState extends State<ProfileBottomSheet> {
           Row(
             children: [
               Icon(
-                Icons.stacked_line_chart_rounded,
+                Icons.delete_rounded,
                 color: greenColor,
                 size: 28,
               ),
               const SizedBox(width: 20,),
               const Text(
-                'Activity',
+                'Delete Account',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16

@@ -11,6 +11,7 @@ import 'package:mhs_application/screens/secondary/exercise_screens/exercise_outp
 import 'package:mhs_application/services/user_database.dart';
 import 'package:mhs_application/shared/constant.dart';
 import 'package:provider/provider.dart';
+import 'package:rxdart/rxdart.dart';
 
 class BuildLoseExecution extends StatefulWidget {
   final Exercise selectedExercise;
@@ -44,6 +45,12 @@ class _BuildLoseExecutionState extends State<BuildLoseExecution> {
   Widget build(BuildContext context) {
     final studentUser = Provider.of<Student?>(context);
 
+    Stream<List<dynamic>> combinedStream = CombineLatestStream.combine2(
+      StudentDatabaseService().readCurrentStudentData('${studentUser?.uid}', 'execute/week $currentWeek/progress'),
+      StudentDatabaseService().readCurrentStudentData('${studentUser?.uid}', 'execute/week $currentWeek/day $day/Goals'),
+      (bmiData, goalsData) => [bmiData, goalsData],
+    );
+
     var studentWeight = studentUser?.weight;
     num weight = studentWeight ?? 0.0;
 
@@ -68,16 +75,19 @@ class _BuildLoseExecutionState extends State<BuildLoseExecution> {
     double totalCaloriesBurned = ((exerciseMet * 3.5 * weight) / 200) * 30;
     int convert = totalCaloriesBurned.toInt();
 
-    return StreamBuilder<Student>(
-      stream: StudentDatabaseService(uid: studentUser!.uid)
-                        .readCurrentStudentData(
-                            '${studentUser.uid}','progress/week $currentWeek/day $day/Goals'),
+    return StreamBuilder<List<dynamic>>(
+      stream: combinedStream,
       builder: (context, snapshot) {
         
-        final data = snapshot.data;
+        final progressData = snapshot.data?[0];
+        var overallTotalExercise = progressData?.countTotalExercise ?? 0;
+        print('progress $overallTotalExercise');
+        var overallcountTotalTime = progressData?.countTotalTime ?? 0;
 
-        var countTotalExercise = data?.countTotalExercise ?? 0;
-        var countTotalTime = data?.countTotalTime ?? 0;
+        final goalsData = snapshot.data?[1];
+        var countTotalExercise = goalsData?.countTotalExercise ?? 0;
+        print('goals $countTotalExercise');
+        var countTotalTime = goalsData?.countTotalTime ?? 0;
 
         return Scaffold(
           body: ListView(
@@ -236,6 +246,8 @@ class _BuildLoseExecutionState extends State<BuildLoseExecution> {
                         int maxWeek = 13;
                         countTotalExercise++;
                         countTotalTime+=total;
+                        overallTotalExercise++;
+                        overallcountTotalTime+=total;
           
                         ExerciseExecution execution = ExerciseExecution(
                           exerciseName: exerciseName,
@@ -247,22 +259,28 @@ class _BuildLoseExecutionState extends State<BuildLoseExecution> {
                         
                         // Store current exercise details
                         // Improvised code
-                        await StudentDatabaseService().storeStudentExerciseData('${studentUser.uid}', exerciseId, currentWeek, day, execution.toJsonDate());
+                        await StudentDatabaseService().storeStudentExerciseData('${studentUser?.uid}', exerciseId, currentWeek, day, execution.toJsonDate());
 
-                        DatabaseReference ref = FirebaseDatabase.instance.ref('students/${studentUser.uid}/progress/week $currentWeek/day $day/Goals');
+                        DatabaseReference ref = FirebaseDatabase.instance.ref('students/${studentUser?.uid}/execute/week $currentWeek/day $day/Goals');
                         await ref.update({
                           'countTotalExercise': countTotalExercise,
                           'countTotalTime': countTotalTime,
                         });
                         print('Total Exercise: $countTotalExercise');
 
+                        DatabaseReference ref2 = FirebaseDatabase.instance.ref('students/${studentUser?.uid}/execute/week $currentWeek/progress');
+                        await ref2.update({
+                          'countTotalExercise': overallTotalExercise,
+                          'countTotalTime': overallcountTotalTime,
+                        });
+
                         if (currentWeek == 4) {
                           if (maxWeek == currentWeek) {
                             for (var i = 10; i <= 13; i++) {
-                              await StudentDatabaseService().removeData('${studentUser.uid}', i);
+                              await StudentDatabaseService().removeData('${studentUser?.uid}', i);
                             }
                             for (int i = 9; i >= 1; i--) {
-                              await StudentDatabaseService().moveData('${studentUser.uid}', i, i + 4);
+                              await StudentDatabaseService().moveData('${studentUser?.uid}', i, i + 4);
                             }
                           }
                           else {

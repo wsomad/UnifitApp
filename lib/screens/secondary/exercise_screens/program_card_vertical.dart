@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mhs_application/components/exercise_components/bottom_sheets/create_goal.dart';
+import 'package:mhs_application/components/exercise_components/today_target.dart';
 import 'package:mhs_application/models/exercise_execution.dart';
 import 'package:mhs_application/models/student.dart';
 import 'package:mhs_application/screens/secondary/notifications.dart';
@@ -56,10 +57,6 @@ class _ProgramCardVerticalState extends State<ProgramCardVertical> {
 
   @override
   Widget build(BuildContext context) {
-    final studentUser = Provider.of<Student?>(context);
-    var day = DateTime.now().weekday;
-    var week = ExerciseExecution().getCurrentWeek();
-
     return ListView(
       children: [
         Padding(
@@ -110,7 +107,7 @@ class _ProgramCardVerticalState extends State<ProgramCardVertical> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                "Today's goal",
+                "Today's target",
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -155,135 +152,7 @@ class _ProgramCardVerticalState extends State<ProgramCardVertical> {
             ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(20, 10, 10, 0),
-          child: Container(
-            decoration: BoxDecoration(
-                border: Border(left: BorderSide(color: greenColor, width: 3))),
-            child: StreamBuilder<Student?>(
-                stream: StudentDatabaseService(uid: studentUser!.uid)
-                    .readCurrentStudentData(
-                        '${studentUser.uid}','/progress/week $week/day $day/Goals'),
-                builder: (context, snapshot) {
-                  final targetData = snapshot.data;
-
-                  // Target exercise progression
-                  var targetExerciseValue =
-                      targetData?.targetNoOfExercise ?? '0';
-                  num targetExercise = int.parse(targetExerciseValue);
-                  var completedExercise = targetData?.countTotalExercise ?? 0;
-                  var progressExercisePercent;
-                  if (completedExercise == 0) {
-                    progressExercisePercent = 0.0;
-                  } else {
-                    progressExercisePercent =
-                        (completedExercise / targetExercise).clamp(0.0, 1.0);
-                  }
-
-                  // Target time progression
-                  var targetTimeValue = targetData?.targetTimeSpent ?? '0';
-                  num targetTime = int.parse(targetTimeValue);
-                  var completedTime = targetData?.countTotalTime ??
-                      0; // Replace with your actual completed exercise count
-                  var progressTimePercent;
-                  if (completedTime == 0) {
-                    progressTimePercent = 0.0;
-                  } else {
-                    progressTimePercent =
-                        (completedTime / targetTime).clamp(0.0, 1.0);
-                  }
-
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                    child: Column(
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Target No. of Exercise',
-                              style: TextStyle(
-                                color: blackColor,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            LinearPercentIndicator(
-                              backgroundColor: greyColor,
-                              lineHeight: 8,
-                              progressColor: greenColor,
-                              barRadius: const Radius.circular(10),
-                              percent: progressExercisePercent,
-                              trailing: Text(
-                                targetExerciseValue.toString(),
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            )
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Target Time Spent (min)',
-                              style: TextStyle(
-                                color: blackColor,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            LinearPercentIndicator(
-                              backgroundColor: greyColor,
-                              lineHeight: 8,
-                              progressColor: greenColor,
-                              barRadius: const Radius.circular(10),
-                              percent: progressTimePercent,
-                              trailing: Text(
-                                targetTimeValue.toString(),
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            )
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Target Calories Burned',
-                              style: TextStyle(
-                                color: blackColor,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            LinearPercentIndicator(
-                              backgroundColor: greyColor,
-                              lineHeight: 8,
-                              progressColor: greenColor,
-                              barRadius: const Radius.circular(10),
-                              percent: 0,
-                              trailing: const Text(
-                                '0',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-          ),
-        ),
+        const TodayTarget(),
         const Padding(
           padding: EdgeInsets.fromLTRB(20, 30, 0, 10),
           child: Text(

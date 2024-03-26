@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 // Color code
 Color greenColor = const Color(0xFF66CC66);
 Color whiteColor = const Color(0xFFFFFFFF);
+Color grey100Color = const Color(0XFFF5F5F5);
 Color greyColor = const Color(0xFFE0E0E0);
+Color goldColor = const Color(0xFFF0D77A);
+Color silverColor = const Color(0XFFC0BFBF);
+Color bronzeColor = const Color(0XFF835C34);
 Color blackColor = const Color(0xFF000000);
 Color beginnerColor = const Color(0xFF0D47A1);
 Color intermediateColor = const Color(0XFFC62828);

@@ -51,7 +51,7 @@ class StudentDatabaseService {
   // 
   Future<void> storeStudentExerciseData(String userId, String exerciseId, int currentWeek, int currentDay, Map<String, dynamic> exerciseData) async {
     try {
-      await studentReference.child('students/$userId/progress/week $currentWeek/day $currentDay/$exerciseId').update(exerciseData);
+      await studentReference.child('students/$userId/execute/week $currentWeek/day $currentDay/$exerciseId').update(exerciseData);
     } catch (e) {
       print('Error storing student exercise data: $e');
       rethrow;
@@ -68,32 +68,27 @@ class StudentDatabaseService {
     // Remove 
     if((weekIndex - 1) > 0) {
       for (var i = 3; i < 4; i++) {
-        await studentReference.child('students/$userId/progress/week $i').remove();
+        await studentReference.child('students/$userId/execute/week $i').remove();
       }
     }
     for (var i = 1; i <= 3; i++) {
       // Source path
-      final event = await studentReference.child('students/$userId/progress/week $i').once();
+      final event = await studentReference.child('students/$userId/execute/week $i').once();
       if (event.snapshot.value != null) {
         // Destination path
-        await studentReference.child('students/$userId/progress/week ${i+1}').set(event.snapshot.value);
-        await studentReference.child('students/$userId/progress/week $i').remove();
+        await studentReference.child('students/$userId/execute/week ${i+1}').set(event.snapshot.value);
+        await studentReference.child('students/$userId/execute/week $i').remove();
       }
     }
   }
-/*
-  Future<void> storeShiftProcess(String userId, int currentWeek, String exerciseId, Map<String, dynamic> exerciseData) async {
-    await storeStudentExerciseData(userId, exerciseId, currentWeek, exerciseData);
-    await shiftWeekNumber(userId);
-  }
-*/
+
   Future<void> moveData(String userId, int index, int destinationIndex) async {    
     // Source path
-    final event = await studentReference.child('students/$userId/progress/week $index').once();
+    final event = await studentReference.child('students/$userId/execute/week $index').once();
     if (event.snapshot.value != null) {
       // Destination path
-      await studentReference.child('students/$userId/progress/week $destinationIndex').set(event.snapshot.value);
-      await studentReference.child('students/$userId/progress/week $index').remove();
+      await studentReference.child('students/$userId/execute/week $destinationIndex').set(event.snapshot.value);
+      await studentReference.child('students/$userId/execute/week $index').remove();
     }
   }
 
@@ -105,7 +100,7 @@ class StudentDatabaseService {
     print('First week: $firstWeek');
     
     // Remove 
-    await studentReference.child('students/$userId/progress/week $index').remove();
+    await studentReference.child('students/$userId/execute/week $index').remove();
   }
 
   Future<int> getDataLength(String databasePath) async {

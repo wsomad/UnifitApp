@@ -12,6 +12,7 @@ class Student {
   double? weight;
   double? height;
   String? faculty;
+  double? bmi;
   String? targetNoOfExercise;
   String? targetTimeSpent;
   String? targetCaloriesBurned;
@@ -31,6 +32,7 @@ class Student {
     this.weight,
     this.height,
     this.faculty,
+    this.bmi,
     this.targetNoOfExercise,
     this.targetTimeSpent,
     this.targetCaloriesBurned,
@@ -52,6 +54,7 @@ class Student {
       'weight': weight,
       'height': height,
       'faculty': faculty,
+      'bmi': bmi,
       'targetNoOfExercise': targetNoOfExercise,
       'targetTimeSpent': targetTimeSpent,
       'targetCaloriesBurned': targetCaloriesBurned,
@@ -90,6 +93,9 @@ class Student {
       faculty: fromJson['faculty'] != null 
         ? fromJson['faculty'] as String 
         : null,
+      bmi: fromJson['bmi'] != null 
+        ? (fromJson['bmi'] as num?)?.toDouble() ?? 0
+        : null,
       targetNoOfExercise: fromJson['targetNoOfExercise'],
       targetTimeSpent: fromJson['targetTimeSpent'],
       targetCaloriesBurned: fromJson['targetCaloriesBurned'],
@@ -97,5 +103,27 @@ class Student {
       countTotalTime: fromJson['countTotalTime'],
       countTotalCalories: fromJson['countTotalCalories'],
     );
+  }
+
+  String determineBMI(double bmi) {
+    String category;
+
+    if (bmi < 18.5) {
+      category = 'Underweight';
+    } 
+    else if (bmi >= 18.5 && bmi < 25) {
+      category = 'Normal';
+    } 
+    else if (bmi >= 25 && bmi < 30) {
+      category = 'Overweight';
+    } 
+    else if (bmi >= 30 && bmi < 35) {
+      category = 'Obese';
+    }
+    else {
+      category = 'Extreme Obese';
+    }
+
+    return category;
   }
 }
