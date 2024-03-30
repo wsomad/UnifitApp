@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:mhs_application/models/exercise_execution.dart';
 import 'package:mhs_application/models/student.dart';
@@ -21,10 +22,8 @@ class StudentDatabaseService {
   
   // Create a Student stream to read only current student data with userID and sourcePath parameter
   Stream<Student> readCurrentStudentData(String userId, String sourcePath) {
-
     // Assign a variable to hold the reference for student data
     var ref = studentReference.child('students/$userId/$sourcePath');
-    
     // By referring to the assign variable, any processes (event) happened is mapped 
     return ref.onValue.map((event) {
       try {
@@ -46,6 +45,53 @@ class StudentDatabaseService {
         return Student();
       }
     });
+  }
+
+  Stream<List<Student>> readAllStudents(String sourcePath) {
+    var ref = studentReference.child(sourcePath);
+
+    return ref.onValue.map((event) {
+      List<Student> students = [];
+      try {
+        if (event.snapshot.value != null) {
+          Map<String, dynamic> data = event.snapshot.value as Map<String, dynamic>;
+          data.forEach((key, value) {
+            students.add(Student.fromJson(value));
+          });
+        }
+      } 
+      catch (e) {
+        print('Error: $e');
+      }
+      print('All Student: $students');
+      return students;
+    });
+  }
+
+Future<List<Student>> readfAllStudents(String sourcePath) async {
+    var ref = studentReference.child(sourcePath);
+
+    try {
+      var snapshot = await ref.once();
+      final event = snapshot.snapshot.value; // Await for the snapshot to be available
+      
+      List<Student> students = [];
+      
+      if (event != null) {
+        Map<String, dynamic> data = event as Map<String, dynamic>;
+        
+        data.forEach((key, value) {
+          students.add(Student.fromJson(value));
+        });
+      }
+      
+      print('All Students: $students');
+      
+      return students;
+    } catch (e) {
+      print('Error: $e');
+      return []; // Return an empty list in case of error
+    }
   }
 
   // 

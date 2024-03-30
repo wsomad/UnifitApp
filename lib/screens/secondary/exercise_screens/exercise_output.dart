@@ -197,15 +197,16 @@ class _ExerciseOutputState extends State<ExerciseOutput> {
                           ),
                         ],
                       );
-                    } 
-                    else {
+                    } else {
                       return const SizedBox(
                         height: 0,
                       );
                     }
                   },
                 ),
-                const SizedBox(height: 20,),
+                const SizedBox(
+                  height: 20,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -226,8 +227,8 @@ class _ExerciseOutputState extends State<ExerciseOutput> {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  BottomNavigationBarShared()),
+                            builder: (context) => BottomNavigationBarShared(),
+                          ),
                         );
                       },
                       style: inputSmallButtonDecoration.copyWith(
