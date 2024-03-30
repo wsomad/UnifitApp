@@ -12,11 +12,11 @@ class PostCard extends StatefulWidget {
 
 class _PostCardState extends State<PostCard> {
   List<String> username = [
-    'Remy Ishak',
+    'John Doe',
     'Johnny Depp',
-    'Adlin Jannah',
-    'Muhammad Haikal',
-    'Najmi Nazhan'
+    'Zul Ariffin',
+    'Tom Spider',
+    'Remy Ishak'
   ];
   List<String> facultyName = [
     'FSG',
