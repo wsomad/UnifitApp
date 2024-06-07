@@ -57,7 +57,7 @@ class CustomInputDialog extends StatelessWidget {
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
                   decoration: textInputDecoration.copyWith(
-                    hintText: 'Insert your new weight (kg)',
+                    hintText: 'Inseft your new weight (kg)',
                   ),
                 ),
               ],
