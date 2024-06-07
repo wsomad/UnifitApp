@@ -6,11 +6,13 @@ import 'package:mhs_application/shared/constant.dart';
 class BuildLoseList extends StatefulWidget {
   final int set;
   final int rep;
+  final Function(List<int>) onRepsChanged;
 
   const BuildLoseList({
     super.key,
     required this.set,
-    required this.rep
+    required this.rep,
+    required this.onRepsChanged,
   });
 
   @override
@@ -33,6 +35,7 @@ class _BuildLoseListState extends State<BuildLoseList> {
     setState(() {
       repsList[rep]++;
     });
+    widget.onRepsChanged(repsList); 
   }
 
   void decreaseReps(int rep) {
@@ -46,6 +49,7 @@ class _BuildLoseListState extends State<BuildLoseList> {
         repsList[rep] = 1;
       });
     }
+    widget.onRepsChanged(repsList);
   }
 
   void addSet() {}
@@ -57,7 +61,6 @@ class _BuildLoseListState extends State<BuildLoseList> {
       physics: NeverScrollableScrollPhysics(),
       itemCount: repsList.length,
       itemBuilder: (context, index) {
-        
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 12),
           child: Column(
@@ -65,18 +68,30 @@ class _BuildLoseListState extends State<BuildLoseList> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
                     children: [
-                      Text(
-                        'Set ${index + 1}',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
+                      Container(
+                        decoration: BoxDecoration(
+                            border: Border(
+                          left: BorderSide(color: greenColor, width: 2),
+                        )),
                       ),
-                      Text(
-                        '${repsList[index]} reps',
-                        style: const TextStyle(fontSize: 14),
-                      )
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Set ${index + 1}',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                          Text(
+                            '${repsList[index]} reps',
+                            style: const TextStyle(
+                              fontSize: 15,
+                            ),
+                          )
+                        ],
+                      ),
                     ],
                   ),
                   Row(
@@ -115,33 +130,28 @@ class _BuildLoseListState extends State<BuildLoseList> {
                           if (isSetDone[index]) {
                             print('Done set ${index + 1}!');
                             ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Completed set ${index + 1}',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold
+                              SnackBar(
+                                content: Text(
+                                  'Set ${index + 1} completed.',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
                                 ),
+                                duration: const Duration(seconds: 5),
                               ),
-                              duration: const Duration(seconds: 5),
-                              backgroundColor: greenColor,
-                              behavior: SnackBarBehavior.floating,
-                            ),
-                          );
-                          } else {
-                            print('Undone set ${index + 1}!');
+                            );
                           }
                         },
-                        child: isSetDone[index] 
-                          ? Icon(
-                            Icons.check_circle_rounded,
-                            color: greenColor,
-                            size: 35,
-                          )
-                          : Icon(
-                          Icons.check_circle_outline_rounded,
-                          color: greenColor,
-                          size: 35,
-                        ),
+                        child: isSetDone[index]
+                            ? Icon(
+                                Icons.check_circle_rounded,
+                                color: greenColor,
+                                size: 35,
+                              )
+                            : Icon(
+                                Icons.check_circle_outline_rounded,
+                                color: greenColor,
+                                size: 35,
+                              ),
                       )
                     ],
                   )

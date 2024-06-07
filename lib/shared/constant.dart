@@ -19,14 +19,14 @@ var textInputDecoration = InputDecoration(
   fillColor: Colors.white,
   filled: true,
   enabledBorder: OutlineInputBorder(
-    borderRadius: const BorderRadius.all(Radius.circular(10)),
+    borderRadius: const BorderRadius.all(Radius.circular(15)),
     borderSide: BorderSide(
-      color: greyColor,
+      color: grey100Color,
       width: 2,
     ),
   ),
   focusedBorder: OutlineInputBorder(
-      borderRadius: const BorderRadius.all(Radius.circular(10)),
+      borderRadius: const BorderRadius.all(Radius.circular(15)),
       borderSide: BorderSide(
         color: greenColor,
         width: 2,
@@ -57,11 +57,11 @@ var smallTextInputDecoration = InputDecoration(
 var dropDownDecoration = InputDecoration(
   enabledBorder: OutlineInputBorder(
     borderSide: BorderSide(
-      color: greenColor,
+      color: greyColor,
       width: 2,
     ),
     borderRadius: const BorderRadius.all(
-      Radius.circular(5),
+      Radius.circular(10),
     ),
   ),
   focusedBorder: OutlineInputBorder(
@@ -70,7 +70,7 @@ var dropDownDecoration = InputDecoration(
       width: 2,
     ),
     borderRadius: const BorderRadius.all(
-      Radius.circular(5),
+      Radius.circular(10),
     ),
   ),
 );
@@ -95,7 +95,7 @@ var inputSmallButtonDecoration = ButtonStyle(
   ),
   shape: MaterialStateProperty.all(
     RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(40),
+      borderRadius: BorderRadius.circular(30),
     ),
   ),
 );

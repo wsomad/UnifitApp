@@ -1,27 +1,22 @@
 // ignore_for_file: avoid_print, prefer_typing_uninitialized_variables
-
-import 'dart:math';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:mhs_application/components/exercise_components/bottom_sheets/create_goal.dart';
 import 'package:mhs_application/components/exercise_components/today_target.dart';
 import 'package:mhs_application/models/exercise_execution.dart';
 import 'package:mhs_application/models/student.dart';
-import 'package:mhs_application/screens/secondary/notifications.dart';
-import 'package:mhs_application/services/database.dart';
-import 'package:mhs_application/services/user_database.dart';
-import 'package:mhs_application/shared/bottom_navigation_bar.dart';
+import 'package:mhs_application/screens/primary/bottom_navigation_bar.dart';
 import 'package:mhs_application/models/exercise.dart';
 import 'package:mhs_application/screens/primary/Program.dart';
 import 'package:mhs_application/screens/secondary/exercise_screens/exercise_collection.dart';
 import 'package:mhs_application/screens/secondary/exercise_screens/exercise_details.dart';
 import 'package:mhs_application/services/exercise_database.dart';
+import 'package:mhs_application/services/user_database.dart';
+import 'package:mhs_application/shared/bmi_weekly_dialog.dart';
 import 'package:mhs_application/shared/constant.dart';
 import 'package:mhs_application/shared/custom_alert_dialog.dart';
-import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:mhs_application/shared/custom_bmi_dialog.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProgramCardVertical extends StatefulWidget {
   const ProgramCardVertical({super.key});
@@ -35,82 +30,135 @@ class _ProgramCardVerticalState extends State<ProgramCardVertical> {
   TextEditingController targetMinutes = TextEditingController();
   TextEditingController targetBurned = TextEditingController();
 
+  var day = DateTime.now().weekday;
+  var currentWeek = ExerciseExecution().getCurrentWeek();
+  int previousWeek = ExerciseExecution().getPreviousWeek();
+  bool _isDialogShown = false;
+  late final Stream<Student?> studentStream;
+
   List<String> goals = [];
   List<String> programsName = [
+    'Brisk Walking',
+    'Running',
     'Muscle Building',
     'Weight Lose',
-    'Running',
-    'Brisk Walking'
   ];
   List<String> programsText = [
+    'Walk Your Life',
+    'Run For Life',
     'Build Your Muscle',
     'Lose Your Weight',
-    'Run For Life',
-    'Walk Your Life'
   ];
   List<String> image = [
+    'assets/images/Brisk_Walking.png',
+    'assets/images/Running.jpg',
     'assets/images/Barbell_Bench_Press_-_Medium_Grip_0.jpg',
     'assets/images/Pushups_0.jpg',
-    'assets/images/Running.jpg',
-    'assets/images/Brisk_Walking.png',
   ];
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        final student = Provider.of<Student?>(context, listen: false);
+        if (student != null && student.uid != null && student.uid is String) {
+          BMIWeeklyDialog.initializeDialogState(
+            context, currentWeek, previousWeek, day, student.uid as String);
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final student = Provider.of<Student?>(context, listen: false);
+
     return ListView(
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(bottom: 10),
-                    child: Text(
-                      'Programs',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+              const Padding(
+                padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                child: Center(
+                  child: Image(
+                    image: AssetImage(
+                      'assets/images/kitafit_logo.png',
                     ),
+                    height: 25,
+                    width: 100,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 0, 10),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context, rootNavigator: true).push(
-                          MaterialPageRoute(
-                            builder: (_) => const Notifications(),
+                ),
+              ),
+              StreamBuilder<Student?>(
+                stream: StudentDatabaseService()
+                  .readCurrentStudentData('${student?.uid}', 'personal')
+                  .asBroadcastStream(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else if (!snapshot.hasData) {
+                    return Text('No data');
+                  } else {
+                    final student = snapshot.data;
+                    var username = student?.username ?? 'null';
+
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                          child: Text(
+                            'Hello, $username',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        );
-                      },
-                      child: Icon(
-                        Icons.notifications_none_rounded,
-                        color: greenColor,
-                        size: 28,
-                      ),
-                    ),
-                  ),
-                ],
+                        ),
+                      ],
+                    );
+                  }
+                }
               ),
             ],
           ),
         ),
         const SizedBox(
-          height: 10,
+          height: 20,
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                "Today's target",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+              Container(
+                decoration: BoxDecoration(
+                    border: Border(
+                  left: BorderSide(color: greenColor, width: 2),
+                )),
+                child: const Row(
+                  children: [
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "Daily's target",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Row(
@@ -131,7 +179,7 @@ class _ProgramCardVerticalState extends State<ProgramCardVertical> {
                     child: Icon(
                       Icons.info_outline_rounded,
                       color: greenColor,
-                      size: 26,
+                      size: 24,
                     ),
                   ),
                   const SizedBox(
@@ -144,7 +192,7 @@ class _ProgramCardVerticalState extends State<ProgramCardVertical> {
                     child: Icon(
                       Icons.add,
                       color: greenColor,
-                      size: 28,
+                      size: 24,
                     ),
                   ),
                 ],
@@ -153,14 +201,31 @@ class _ProgramCardVerticalState extends State<ProgramCardVertical> {
           ),
         ),
         const TodayTarget(),
-        const Padding(
-          padding: EdgeInsets.fromLTRB(20, 30, 0, 10),
-          child: Text(
-            'Explore our programs for a healthier you!',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 40, 0, 10),
+          child: Row(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                    border: Border(
+                  left: BorderSide(color: greenColor, width: 2),
+                )),
+                child: const Row(
+                  children: [
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      'Explore our programs!',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
         ListView.builder(
@@ -174,16 +239,32 @@ class _ProgramCardVerticalState extends State<ProgramCardVertical> {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
               child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
                 child: Stack(
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(5),
-                      child: SizedBox(
-                        height: 190,
-                        child: Image.asset(
-                          programImage,
-                          width: 400,
-                          fit: BoxFit.cover,
+                      child: Container(
+                        height: 180,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(programImage),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.transparent,
+                                Colors.black.withOpacity(0.7),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -206,7 +287,6 @@ class _ProgramCardVerticalState extends State<ProgramCardVertical> {
                       right: 0,
                       child: GestureDetector(
                         onTap: () {
-                          print('User select $program');
                           Navigator.of(context, rootNavigator: true).push(
                             MaterialPageRoute(
                               builder: (_) =>
@@ -217,11 +297,12 @@ class _ProgramCardVerticalState extends State<ProgramCardVertical> {
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 15, vertical: 10),
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.only(
-                                bottomLeft: Radius.circular(4),
-                                bottomRight: Radius.circular(4)),
-                            color: whiteColor.withOpacity(0.9),
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(4),
+                              bottomRight: Radius.circular(4),
+                            ),
+                            color: Colors.transparent,
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -230,17 +311,20 @@ class _ProgramCardVerticalState extends State<ProgramCardVertical> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'PROGRAM',
+                                    'Program',
                                     style: TextStyle(
                                       color: greenColor,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 14,
+                                      fontSize: 16,
                                     ),
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
                                   ),
                                   Text(
                                     programText,
                                     style: TextStyle(
-                                      color: blackColor,
+                                      color: whiteColor,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 14,
                                     ),
@@ -251,7 +335,7 @@ class _ProgramCardVerticalState extends State<ProgramCardVertical> {
                                 alignment: Alignment.centerRight,
                                 child: Icon(
                                   Icons.arrow_forward_ios_rounded,
-                                  color: greenColor,
+                                  color: whiteColor,
                                 ),
                               )
                             ],
@@ -275,10 +359,20 @@ class _ProgramCardVerticalState extends State<ProgramCardVertical> {
 
     switch (programNames) {
       case 'Muscle Building':
+        return ExerciseCollection(
+          programName: programNames,
+          exerciseList: [],
+          sets: 5,
+          reps: 9,
+          type: 'Muscle Building',
+        );
       case 'Weight Lose':
         return ExerciseCollection(
           programName: programNames,
           exerciseList: [],
+          sets: 3,
+          reps: 13,
+          type: 'Weight Lose',
         );
       case 'Running':
       case 'Brisk Walking':
@@ -292,6 +386,10 @@ class _ProgramCardVerticalState extends State<ProgramCardVertical> {
               return ExerciseDetails(
                 programName: programNames,
                 selectedExercise: selectedExercise,
+                sets: 0,
+                reps: 0,
+                type: 'null',
+                image: 'null',
               );
             }
           },

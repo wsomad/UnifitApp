@@ -1,15 +1,14 @@
-// ignore_for_file: avoid_print, prefer_interpolation_to_compose_strings
-
-import 'package:flutter/gestures.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Tambah ni untuk PlatformException
+import 'package:mhs_application/screens/authenticate/personal.dart';
 import 'package:mhs_application/screens/authenticate/sign_up.dart';
 import 'package:mhs_application/services/auth.dart';
+import 'package:mhs_application/screens/primary/bottom_navigation_bar.dart';
 import 'package:mhs_application/shared/constant.dart';
 
 class SignIn extends StatefulWidget {
-
-  //final Function toggleView;
-
   const SignIn({super.key});
 
   @override
@@ -25,6 +24,95 @@ class _SignInState extends State<SignIn> {
 
   String email = '';
   String password = '';
+  String _errorMessage = '';
+
+  bool isEmailValid(String email) {
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    return emailRegex.hasMatch(email);
+  }
+
+  Future<void> _signIn() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        dynamic result =
+            await _authService.signInWithEmailAndPassword(email, password);
+        if (result != null) {
+          bool userDetailsFilled =
+              await checkUserDetails(result.uid, 'personal');
+          if (!mounted) return;
+          if (userDetailsFilled) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const BottomNavigationBarShared(),
+              ),
+            );
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Personal(),
+              ),
+            );
+          }
+        } else {
+          setState(() {
+            _errorMessage = 'Failed to sign in. User does not exist.';
+          });
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(_errorMessage),
+                duration: Duration(seconds: 5),
+              ),
+            );
+          }
+        }
+      } on FirebaseAuthException catch (e) {
+        setState(() {
+          if (e.code == 'invalid-email') {
+            _errorMessage = 'Invalid email address.';
+          } else if (e.code == 'user-disabled') {
+            _errorMessage = 'This user has been disabled.';
+          } else if (e.code == 'user-not-found') {
+            _errorMessage = 'No user found for that email.';
+          } else if (e.code == 'wrong-password') {
+            _errorMessage = 'Wrong password provided for that user.';
+          } else {
+            _errorMessage = 'Error: ${e.message}';
+          }
+        });
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(_errorMessage),
+              duration: Duration(seconds: 5),
+            ),
+          );
+        }
+      } on PlatformException catch (e) {
+        setState(() {
+          _errorMessage = 'Error: ${e.message}';
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(_errorMessage),
+            duration: Duration(seconds: 5),
+          ),
+        );
+      } catch (e) {
+        setState(() {
+          _errorMessage = 'An unknown error occurred.';
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(_errorMessage),
+            duration: Duration(seconds: 5),
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,15 +127,31 @@ class _SignInState extends State<SignIn> {
                 children: [
                   const SizedBox(
                     height: 340,
-                    child: Center(
-                      child: Text(
-                        'You Have Made A Right Choice.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
+                          child: Center(
+                            child: Image(
+                              image: AssetImage(
+                                'assets/images/kitafit_logo.png',
+                              ),
+                              height: 100,
+                              width: 300,
+                            ),
+                          ),
                         ),
-                      ),
+                        Center(
+                          child: Text(
+                            "Sign In Now to Continue.",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(
@@ -58,14 +162,25 @@ class _SignInState extends State<SignIn> {
                     child: Text(
                       'Email',
                       textAlign: TextAlign.left,
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   TextFormField(
-                    decoration: textInputDecoration.copyWith(hintText: 'Email'),
+                    decoration: textInputDecoration.copyWith(
+                      prefixIcon: Icon(
+                        Icons.email_outlined,
+                        color: greyColor,
+                      ),
+                      hintText: 'Email',
+                    ),
                     validator: (String? value) {
-                      if (value != null && value.isEmpty) {
-                        return "Email can't be empty";
+                      if (value == null || value.isEmpty) {
+                        return 'Email cannot be empty.';
+                      } else if (!isEmailValid(value)) {
+                        return 'Email is not valid.';
                       }
                       return null;
                     },
@@ -84,17 +199,25 @@ class _SignInState extends State<SignIn> {
                     child: Text(
                       'Password',
                       textAlign: TextAlign.left,
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   TextFormField(
-                    decoration: textInputDecoration.copyWith(hintText: 'Password'),
+                    decoration: textInputDecoration.copyWith(
+                      prefixIcon: Icon(
+                        Icons.key_rounded,
+                        color: greyColor,
+                      ),
+                      hintText: 'Password',
+                    ),
                     validator: (String? value) {
-                      if (value!.length < 6) {
-                        return "Password must be length than 6 characters";
-                      }
-                      else if (value.isEmpty) {
-                        return "Password can't be empty";
+                      if (value == null || value.isEmpty) {
+                        return 'Password cannot be empty.';
+                      } else if (value.length < 6) {
+                        return "Password can't be less than 6 characters.";
                       }
                       return null;
                     },
@@ -110,62 +233,58 @@ class _SignInState extends State<SignIn> {
                     height: 30,
                   ),
                   ElevatedButton(
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        dynamic result = await _authService.signInWithEmailAndPassword(email, password);
-                        if (result == null) {
-                          print("Failed to sign in. User is not exists yet.");
-                        }
-                        else {
-                          print("Successfully signed in!");
-                          print("Current User: " + result.uid);
-                        }/*
-                        if (mounted) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const Home()),
-                          );
-                        }*/
-                      }
-                    },
+                    onPressed: _signIn,
                     style: inputLargeButtonDecoration,
                     child: Text(
                       'Sign In',
-                      style: TextStyle(color: whiteColor, fontSize: 16),
+                      style: TextStyle(
+                        color: whiteColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  RichText(
-                    text: TextSpan(
-                      text: "Don't have any account?",
-                      style: const TextStyle(
-                        color: Colors.black, 
-                        decoration: TextDecoration.none,
-                        fontFamily: 'Ruda' 
+                  if (_errorMessage.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: Text(
+                        _errorMessage,
+                        style: TextStyle(color: Colors.red),
                       ),
+                    ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        TextSpan(
-                          text: " Sign Up",
-                          style: const TextStyle(
-                            color: Color(0xFF66CC66),
+                        Text(
+                          "Don't have any account?",
+                          style: TextStyle(
+                            color: blackColor,
                             decoration: TextDecoration.none,
-                            fontFamily: 'Ruda'
                           ),
-                          recognizer: TapGestureRecognizer()
-                          ..onTap = () {
+                        ),
+                        GestureDetector(
+                          onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const SignUp()),
+                              MaterialPageRoute(
+                                  builder: (context) => const SignUp()),
                             );
                           },
-                          /*recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            widget.toggleView();
-                          }*/
+                          child: Text(
+                            " Sign Up",
+                            style: TextStyle(
+                              color: greenColor,
+                              decoration: TextDecoration.none,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         )
-                      ]
+                      ],
                     ),
                   ),
                 ],
@@ -175,5 +294,17 @@ class _SignInState extends State<SignIn> {
         ),
       ),
     );
+  }
+
+  Future<bool> checkUserDetails(String userId, String sourcePath) async {
+    final path =
+        FirebaseDatabase.instance.ref().child('students/$userId/$sourcePath');
+
+    final event = await path.once();
+    if (event.snapshot.exists) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

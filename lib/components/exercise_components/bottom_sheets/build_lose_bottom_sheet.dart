@@ -5,11 +5,21 @@ import 'package:mhs_application/screens/secondary/exercise_screens/build_lose_ex
 import 'package:mhs_application/shared/constant.dart';
 
 class BuildLoseBottomSheet extends StatefulWidget {
+  final String programName;
   final Exercise selectedExercise;
+  final int sets;
+  final int reps;
+  final String type;
+  final String image;
 
   const BuildLoseBottomSheet({
     super.key,
+    required this.programName,
     required this.selectedExercise,
+    required this.sets,
+    required this.reps,
+    required this.type,
+    required this.image,
   });
 
   @override
@@ -24,6 +34,22 @@ class _BuildLoseBottomSheetState extends State<BuildLoseBottomSheet> {
   int rep = 0;
   int set = 0;
 
+  void determineProgram() {
+    if (widget.type == 'Muscle Building') {
+      setState(() {
+        set = widget.sets;
+        rep = widget.reps;
+        print('$set $rep');
+      });
+    } else if (widget.type == 'Weight Loss') {
+      setState(() {
+        set = widget.sets;
+        rep = widget.reps;
+        print('$set $rep');
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -35,7 +61,10 @@ class _BuildLoseBottomSheetState extends State<BuildLoseBottomSheet> {
           children: [
             const Text(
               'Set Exercise',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(
               height: 30,
@@ -45,7 +74,10 @@ class _BuildLoseBottomSheetState extends State<BuildLoseBottomSheet> {
               children: [
                 const Text(
                   'Number of Set',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 SizedBox(
                   width: 200.0,
@@ -58,7 +90,8 @@ class _BuildLoseBottomSheetState extends State<BuildLoseBottomSheet> {
                       }
                     },
                     decoration: textInputDecoration.copyWith(
-                      hintText: '0',
+                      hintText:
+                          widget.type == 'Muscle Building' ? 'Recommended: 3-6' : 'Recommended: 6-12',
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 20.0),
                     ),
@@ -74,7 +107,10 @@ class _BuildLoseBottomSheetState extends State<BuildLoseBottomSheet> {
               children: [
                 const Text(
                   'Number of Rep',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 SizedBox(
                   width: 200.0,
@@ -88,7 +124,8 @@ class _BuildLoseBottomSheetState extends State<BuildLoseBottomSheet> {
                     },
                     decoration: textInputDecoration.copyWith(
                       //suffixText: 'No. of set(s)',
-                      hintText: '0',
+                      hintText:
+                          widget.type == 'Muscle Building' ? 'Recommended: 6-12' : 'Recommended: 10-15',
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 20.0),
                     ),
@@ -128,7 +165,8 @@ class _BuildLoseBottomSheetState extends State<BuildLoseBottomSheet> {
                         builder: (BuildContext context) {
                           return const CustomAlertDialog(
                             title: 'Warning',
-                            message: "You can't proceed by leaving your set or rep empty.",
+                            message:
+                                "You can't proceed by leaving your set or rep empty.",
                           );
                         },
                       );
@@ -137,9 +175,11 @@ class _BuildLoseBottomSheetState extends State<BuildLoseBottomSheet> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => BuildLoseExecution(
+                            programName: widget.programName,
                             selectedExercise: widget.selectedExercise,
                             rep: rep,
                             set: set,
+                            image: widget.image,
                           ),
                         ),
                       );

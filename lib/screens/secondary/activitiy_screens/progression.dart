@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:mhs_application/components/activity_components/bmi_progression.dart';
 import 'package:mhs_application/components/activity_components/calories_burned_progression.dart';
 import 'package:mhs_application/components/activity_components/exercise_progression.dart';
@@ -82,4 +82,4 @@ class _ProgressionState extends State<Progression> {
       ),
     );
   }
-}
+}*/

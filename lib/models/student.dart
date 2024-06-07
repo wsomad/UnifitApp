@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:mhs_application/models/badges.dart';
 import 'package:mhs_application/models/date.dart';
 
 class Student {
@@ -17,9 +19,11 @@ class Student {
   String? targetTimeSpent;
   String? targetCaloriesBurned;
   int? countTotalExercise;
-  int? countTotalTime;
+  double? countTotalTime;
   int? countTotalCalories;
   int? leaderboardRank;
+  List<Badges>? badge;
+  String? profile;
   
   // Create a constructor
   Student({
@@ -39,6 +43,8 @@ class Student {
     this.countTotalExercise,
     this.countTotalTime,
     this.countTotalCalories,
+    this.badge,
+    this.profile,
   });
 
   // (Json Serialization)
@@ -61,12 +67,25 @@ class Student {
       'countTotalExercise': countTotalExercise,
       'countTotalTime': countTotalTime,
       'countTotalCalories': countTotalCalories,
+      'badge': badge?.map((badge) => badge.toJson()).toList(),
+      'profile': profile,
     };
   }
 
   // (Json Deserialization)
   // Converting Students dart object from JSON format
   factory Student.fromJson(Map<String, dynamic> fromJson) {
+    
+    var badgeData = fromJson['badge'];
+    List<dynamic> badges = [];
+
+    if (badgeData is Map<String, dynamic>) {
+      // Convert Map to List
+      badges = badgeData.values.toList();
+    } else if (badgeData is List) {
+      badges = badgeData;
+    }
+
     return Student(
       uid: fromJson['uid'] != null 
         ? fromJson['uid'] as String 
@@ -94,14 +113,20 @@ class Student {
         ? fromJson['faculty'] as String 
         : null,
       bmi: fromJson['bmi'] != null 
-        ? (fromJson['bmi'] as num?)?.toDouble() ?? 0
+        ? (fromJson['bmi'] as num?)?.toDouble() ?? 0.0
         : null,
       targetNoOfExercise: fromJson['targetNoOfExercise'],
       targetTimeSpent: fromJson['targetTimeSpent'],
       targetCaloriesBurned: fromJson['targetCaloriesBurned'],
       countTotalExercise: fromJson['countTotalExercise'],
-      countTotalTime: fromJson['countTotalTime'],
+      countTotalTime: fromJson['countTotalTime'] != null 
+      ? (fromJson['countTotalTime'] as num?)?.toDouble() ?? 0.0
+        : null,
       countTotalCalories: fromJson['countTotalCalories'],
+      badge: (fromJson['badge'] as List<dynamic>?)
+          ?.map((badge) => Badges.fromJson(badge as Map<String, dynamic>))
+          .toList(),
+      profile: fromJson['profile'],
     );
   }
 

@@ -10,7 +10,7 @@ class Exercise {
   List<String>? secondaryMuscles;
   List<String>? instructions;
   String? category;
-  List<String>? imagesPath;
+  List<String>? images;
 
   Exercise({
     this.id,
@@ -24,7 +24,7 @@ class Exercise {
     this.secondaryMuscles,
     this.instructions,
     this.category,
-    this.imagesPath,
+    this.images,
   });
 
   Map<String, dynamic> toJson() {
@@ -40,7 +40,7 @@ class Exercise {
       'secondaryMuscles': secondaryMuscles,
       'instructions': instructions,
       'category': category,
-      'imagesPath': imagesPath,
+      'images': images,
     };
   }
 
@@ -67,8 +67,8 @@ class Exercise {
           ? List<String>.from(fromJson['instructions'])
           : <String>['-'],
       category: fromJson['category'] ?? 'No category',
-      imagesPath: fromJson['imagesPath'] != null
-          ? List<String>.from(fromJson['imagesPath'])
+      images: fromJson['images'] != null
+          ? List<String>.from(fromJson['images'])
           : <String>['-'],
     );
   }

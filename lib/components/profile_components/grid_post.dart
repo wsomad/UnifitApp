@@ -14,7 +14,7 @@ class _GridProfilePostState extends State<GridProfilePost> {
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-      itemCount: 20,
+      itemCount: 10,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       scrollDirection: Axis.vertical,

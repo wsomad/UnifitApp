@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:mhs_application/shared/constant.dart';
 
@@ -19,7 +17,7 @@ class CustomAlertDialog extends StatelessWidget {
       title: Text(
         title,
         style: const TextStyle(
-          fontSize: 20,
+          fontSize: 18,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -34,7 +32,7 @@ class CustomAlertDialog extends StatelessWidget {
           ),
           const SizedBox(
             height: 10,
-          )
+          ),
         ],
       ),
       actions: [
@@ -45,11 +43,11 @@ class CustomAlertDialog extends StatelessWidget {
             },
             style: inputLargeButtonDecoration,
             child: Text(
-              'OK',
+              'Understood',
               style: TextStyle(
                 color: whiteColor,
                 fontWeight: FontWeight.bold,
-                fontSize: 16,
+                fontSize: 14,
               ),
             ),
           ),

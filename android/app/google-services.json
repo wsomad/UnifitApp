@@ -1,8 +1,9 @@
 {
   "project_info": {
     "project_number": "997653559531",
+    "firebase_url": "https://mhs-application-default-rtdb.firebaseio.com",
     "project_id": "mhs-application",
-    "storage_bucket": "mhs-application.appspot.com"
+    "storage_bucket": "gs://mhs-application.appspot.com"
   },
   "client": [
     {

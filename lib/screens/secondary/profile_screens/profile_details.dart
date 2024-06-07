@@ -1,11 +1,13 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mhs_application/components/profile_components/grid_badge.dart';
 import 'package:mhs_application/components/profile_components/grid_post.dart';
 import 'package:mhs_application/components/profile_components/profile_bottom_sheet.dart';
 import 'package:mhs_application/models/student.dart';
-import 'package:mhs_application/screens/secondary/notifications.dart';
+import 'package:mhs_application/services/image_database.dart';
 import 'package:mhs_application/services/user_database.dart';
 import 'package:mhs_application/shared/constant.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +20,9 @@ class ProfileDetails extends StatefulWidget {
 }
 
 class _ProfileDetailsState extends State<ProfileDetails> {
+  
+  File? _image;
+
   final List<Widget> tabs = const [
     Tab(
       icon: Icon(Icons.grid_on_rounded
@@ -32,37 +37,57 @@ class _ProfileDetailsState extends State<ProfileDetails> {
     )
   ];
 
+  Future<void> _pickImage() async {
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+    
+    try {
+      final student = Provider.of<Student?>(context, listen: false);
+      final userId = student?.uid ?? '';
+      
+      // Ensure _image is not null before uploading
+      if (_image != null) {
+        final imageUrl = await ImageDatabaseService().uploadProfilePicture(userId, _image!);
+        
+        // Check if imageUrl is null, if so, provide a default value or handle gracefully
+        imageUrl != null
+            ? await ImageDatabaseService().updateUserProfilePicture(userId, imageUrl)
+            : print('Image URL is null');
+      } else {
+        print('No image chosen');
+      }
+    } catch (e) {
+      print('Error storing profile picture: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final student = Provider.of<Student>(context);
+    final student = Provider.of<Student?>(context);
 
     return DefaultTabController(
       length: 2,
       child: StreamBuilder<Student>(
-        stream: StudentDatabaseService(uid: student.uid)
-            .readCurrentStudentData('${student.uid}','personal'),
+        stream: StudentDatabaseService(uid: student?.uid)
+            .readCurrentStudentData('${student?.uid}', 'personal'),
         builder: ((context, snapshot) {
           final data = snapshot.data;
 
           var username = data?.username ?? 'null';
           var faculty = data?.faculty ?? 'null';
-          var studentWeight = data?.weight;
-          num weight = studentWeight ?? 0.0;
-          var studentHeight = data?.height;
-          num height = studentHeight ?? 0.0;
-          print('weight $weight');
-          print('height $height');
-          var studentHeightMeter = height / 100;
-          num heightMeter = studentHeightMeter;
-
-          print('meter $heightMeter');
-          var studentBmi = weight / (heightMeter * heightMeter);
-          num bmi = studentBmi;
-          String bmiValue = bmi.toStringAsFixed(2);
-          var image = 'assets/images/Profile.png';
-
-          var total = data?.countTotalExercise;
-          print('exercise $total');
+          //var studentWeight = data?.weight;
+          //num weight = studentWeight ?? 0.0;
+          //var studentHeight = data?.height;
+          //num height = studentHeight ?? 0.0;
+          //var studentHeightMeter = height / 100;
+          // heightMeter = studentHeightMeter;
+          var profile = data?.profile;
+          print('Gambar $profile');
+          //var total = data?.countTotalExercise;
 
           return Builder(
             builder: (context) {
@@ -76,7 +101,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Padding(
-                              padding: EdgeInsets.only(bottom: 10),
+                              padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
                               child: Text(
                                 'Profile',
                                 style: TextStyle(
@@ -86,27 +111,9 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
+                              padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
                               child: Row(
                                 children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(context,  rootNavigator: true).push(
-                                        MaterialPageRoute(
-                                          builder: (_) =>
-                                          const Notifications(),
-                                        ),
-                                      );
-                                    },
-                                    child: Icon(
-                                      Icons.notifications_none_rounded,
-                                      color: greenColor,
-                                      size: 28,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 20,
-                                  ),
                                   GestureDetector(
                                     onTap: () {
                                       showBottomSheet();
@@ -114,7 +121,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                                     child: Icon(
                                       Icons.menu,
                                       color: greenColor,
-                                      size: 28,
+                                      size: 26,
                                     ),
                                   )
                                 ],
@@ -123,12 +130,36 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                           ],
                         ),
                         const SizedBox(
-                          height: 10,
+                          height: 20,
                         ),
-                        Image.asset(
-                          image,
-                          width: 130,
-                          fit: BoxFit.cover,
+                        Stack(
+                          children: [
+                            CircleAvatar(
+                              radius: 40,
+                              backgroundImage: _image != null
+                                ? CachedNetworkImageProvider(profile!)
+                                : const AssetImage('assets/images/Profile.png') as ImageProvider,
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: GestureDetector(
+                                onTap: _pickImage,
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.camera_alt,
+                                    color: Colors.grey,
+                                    size: 15,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(
                           height: 20,
@@ -144,17 +175,35 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Column(
+                            Column(
                               children: [
                                 Text(
                                   '0',
                                   style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const Text(
+                                  'Posts',
+                                  style: TextStyle(fontSize: 13),
+                                )
+                              ],
+                            ),
+                            const SizedBox(
+                              width: 40,
+                            ),
+                            Column(
+                              children: [
+                                Text(
+                                  '10',
+                                  style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold),
                                 ),
-                                Text(
-                                  'Posts',
-                                  style: TextStyle(fontSize: 14),
+                                const Text(
+                                  'Workout',
+                                  style: TextStyle(fontSize: 13),
                                 )
                               ],
                             ),
@@ -171,29 +220,12 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                                 ),
                                 Text(
                                   'Rank',
-                                  style: TextStyle(fontSize: 14),
+                                  style: TextStyle(fontSize: 13),
                                 )
                               ],
                             ),
-                            const SizedBox(
-                              width: 40,
-                            ),
-                            Column(
-                              children: [
-                                Text(
-                                  bmiValue,
-                                  style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                const Text(
-                                  'BMI',
-                                  style: TextStyle(fontSize: 14),
-                                )
-                              ],
-                            )
                           ],
-                        ),                        
+                        ),
                         const SizedBox(
                           height: 20,
                         ),
@@ -203,13 +235,16 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                   TabBar(
                     tabs: const [
                       Tab(
-                        icon: Icon(Icons.grid_on_rounded
-                            //color: greenColor,
-                            ),
+                        icon: Icon(
+                          Icons.grid_on_rounded,
+                          size: 22,
+                          //color: greenColor,
+                        ),
                       ),
                       Tab(
                         icon: Icon(
-                          Icons.stars,
+                          Icons.star_rounded,
+                          size: 26,
                           //color: greyColor,
                         ),
                       )
@@ -219,9 +254,9 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                     unselectedLabelColor: greyColor,
                     indicatorSize: TabBarIndicatorSize.label,
                   ),
-                  const SizedBox(
-                    height: 1000,
-                    child: TabBarView(
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height,
+                    child: const TabBarView(
                       children: [
                         GridProfilePost(),
                         GridProfileBadge(),

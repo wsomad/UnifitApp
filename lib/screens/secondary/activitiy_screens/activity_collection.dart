@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:mhs_application/components/profile_components/profile_bottom_sheet.dart';
 import 'package:mhs_application/models/exercise_execution.dart';
 import 'package:mhs_application/models/student.dart';
+import 'package:mhs_application/screens/secondary/activitiy_screens/badges_collection.dart';
 import 'package:mhs_application/screens/secondary/activitiy_screens/leaderboard.dart';
-import 'package:mhs_application/screens/secondary/activitiy_screens/progression.dart';
-import 'package:mhs_application/screens/secondary/notifications.dart';
+import 'package:mhs_application/screens/secondary/activitiy_screens/weekly_progression.dart';
 import 'package:mhs_application/services/user_database.dart';
 import 'package:mhs_application/shared/constant.dart';
+import 'package:mhs_application/shared/custom_bmi_dialog.dart';
 import 'package:provider/provider.dart';
-import 'package:rxdart/rxdart.dart';
 
 class ActivityCollection extends StatefulWidget {
   const ActivityCollection({super.key});
@@ -17,25 +18,88 @@ class ActivityCollection extends StatefulWidget {
 }
 
 class _ActivityCollectionState extends State<ActivityCollection> {
-
   var day = DateTime.now().weekday;
   var currentWeek = ExerciseExecution().getCurrentWeek();
+  int previousWeek = ExerciseExecution().getPreviousWeek();
+/*
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkForNewWeek();
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void checkForNewWeek() async {
+    if (currentWeek != previousWeek) {
+      if (day == 1) {
+        if (mounted) {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return const CustomInputDialog(
+                title: 'Requirement',
+                message:
+                    'By updating your weight every week, we can determine your latest BMI and ideal BMI for you to achieved.',
+              );
+            },
+          );
+        }
+      }
+    }
+  }*/
 
   @override
   Widget build(BuildContext context) {
     final studentUser = Provider.of<Student?>(context);
 
+    void showBottomSheet() {
+      showModalBottomSheet(
+        context: context,
+        useRootNavigator: true,
+        builder: (context) {
+          return Container(
+            width: MediaQuery.sizeOf(context).width,
+            height: 280,
+            decoration: BoxDecoration(
+              color: whiteColor,
+              borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+            ),
+            child: const ProfileBottomSheet(),
+          );
+        },
+      );
+    }
+
     return ListView(
       children: [
         Column(
           children: [
+            const Padding(
+              padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+              child: Center(
+                child: Image(
+                  image: AssetImage(
+                    'assets/images/kitafit_logo.png',
+                  ),
+                  height: 25,
+                  width: 100,
+                ),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Padding(
-                    padding: EdgeInsets.only(bottom: 10),
+                    padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
                     child: Text(
                       'Activity',
                       style: TextStyle(
@@ -45,20 +109,20 @@ class _ActivityCollectionState extends State<ActivityCollection> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 0, 10),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context, rootNavigator: true).push(
-                          MaterialPageRoute(
-                            builder: (_) => const Notifications(),
+                    padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            showBottomSheet();
+                          },
+                          child: Icon(
+                            Icons.menu,
+                            color: greenColor,
+                            size: 26,
                           ),
-                        );
-                      },
-                      child: Icon(
-                        Icons.notifications_none_rounded,
-                        color: greenColor,
-                        size: 28,
-                      ),
+                        )
+                      ],
                     ),
                   ),
                 ],
@@ -68,40 +132,77 @@ class _ActivityCollectionState extends State<ActivityCollection> {
               height: 20,
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
               child: Column(
                 children: [
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Weekly Progression',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              border: Border(
+                            left: BorderSide(color: greenColor, width: 2),
+                          )),
+                          child: const Row(
+                            children: [
+                               SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                'Weekly Progression',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context, rootNavigator: true)
+                              .push(MaterialPageRoute(
+                            builder: (context) {
+                              return const WeeklyProgression();
+                            },
+                          ));
+                        },
+                        style: inputTinyButtonDecoration,
+                        child: Text(
+                          'View',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: whiteColor,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 20,),
-                    StreamBuilder<Student>(
-                      stream: StudentDatabaseService().readCurrentStudentData('${studentUser?.uid}', 'execute/week $currentWeek/progress'),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  StreamBuilder<Student>(
+                      stream: StudentDatabaseService().readCurrentStudentData(
+                          '${studentUser?.uid}',
+                          'execute/week $currentWeek/progress'),
                       builder: (context, snapshot) {
-
                         final data = snapshot.data;
                         var bmi = data?.bmi ?? 0;
                         var countTotalExercise = data?.countTotalExercise ?? 0;
                         var countTotalTime = data?.countTotalTime ?? 0;
                         var countTotalCalories = data?.countTotalCalories ?? 0;
-
                         var bmiCategory = Student().determineBMI(bmi);
 
-                        return SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
+                        return Column(children: [
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                height: 140,
-                                width: 160,
+                                height: 130,
+                                width: 170,
                                 decoration: BoxDecoration(
                                   color: grey100Color,
                                   borderRadius: const BorderRadius.all(
@@ -111,13 +212,15 @@ class _ActivityCollectionState extends State<ActivityCollection> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(15.0),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         children: [
                                           Icon(
                                             Icons.accessibility_new_rounded,
                                             color: greenColor,
+                                            size: 22,
                                           ),
                                           const SizedBox(
                                             width: 10,
@@ -126,7 +229,7 @@ class _ActivityCollectionState extends State<ActivityCollection> {
                                             'BMI',
                                             style: TextStyle(
                                               color: blackColor,
-                                              fontSize: 16,
+                                              fontSize: 15,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
@@ -138,23 +241,30 @@ class _ActivityCollectionState extends State<ActivityCollection> {
                                       Row(
                                         children: [
                                           Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: [
                                                   Text(
                                                     bmi.toStringAsFixed(2),
                                                     style: const TextStyle(
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 30,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 26,
                                                     ),
                                                   ),
-                                                  const SizedBox(width: 10,),
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  ),
                                                   const Text(
                                                     'kg/m2',
                                                     style: TextStyle(
-                                                      fontWeight: FontWeight.bold,
-                                                      color: Colors.black26
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.black26,
+                                                      fontSize: 14,
                                                     ),
                                                   )
                                                 ],
@@ -163,30 +273,39 @@ class _ActivityCollectionState extends State<ActivityCollection> {
                                           ),
                                         ],
                                       ),
-                                      const SizedBox(height: 5,),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
                                             bmiCategory.toString(),
                                             style: const TextStyle(
                                               fontWeight: FontWeight.bold,
-                                              color: Colors.black26
+                                              color: Colors.black26,
+                                              fontSize: 14,
                                             ),
                                           ),
                                           GestureDetector(
-                                            onTap: () {
-                                              Navigator.of(context, rootNavigator: true).push(
-                                                MaterialPageRoute(builder: (context) {
-                                                  return const Progression(typeofProgression: 'bmi',);
-                                                },)
+                                            onTap: () async {
+                                              showDialog(
+                                                context: context,
+                                                barrierDismissible: false,
+                                                builder: (context) {
+                                                  return const CustomInputDialog(
+                                                    title: 'Requirement',
+                                                    message: 'Kindly update your weight',
+                                                  );
+                                                },
                                               );
                                             },
                                             child: CircleAvatar(
-                                              maxRadius: 13,
+                                              maxRadius: 12,
                                               backgroundColor: greenColor,
                                               child: Icon(
-                                                Icons.arrow_outward_rounded,
+                                                Icons.arrow_circle_up_rounded,
                                                 size: 16,
                                                 color: grey100Color,
                                               ),
@@ -202,8 +321,8 @@ class _ActivityCollectionState extends State<ActivityCollection> {
                                 width: 10,
                               ),
                               Container(
-                                height: 140,
-                                width: 160,
+                                height: 130,
+                                width: 170,
                                 decoration: BoxDecoration(
                                   color: grey100Color,
                                   borderRadius: const BorderRadius.all(
@@ -213,13 +332,15 @@ class _ActivityCollectionState extends State<ActivityCollection> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(15.0),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         children: [
                                           Icon(
                                             Icons.fitness_center_rounded,
                                             color: greenColor,
+                                            size: 22,
                                           ),
                                           const SizedBox(
                                             width: 10,
@@ -228,102 +349,7 @@ class _ActivityCollectionState extends State<ActivityCollection> {
                                             'Exercise',
                                             style: TextStyle(
                                               color: blackColor,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 15,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            countTotalExercise.toString(),
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 30,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 10,),
-                                          const Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'Exercise',
-                                                style: TextStyle(
-                                                  color: Colors.black26,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              Text(
-                                                'Completed',
-                                                style: TextStyle(
-                                                    color: Colors.black26,
-                                                    fontWeight: FontWeight.bold),
-                                              )
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                      Align(
-                                        alignment: Alignment.bottomRight,
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            Navigator.of(context, rootNavigator: true).push(
-                                              MaterialPageRoute(builder: (context) {
-                                                return const Progression(typeofProgression: 'exercise',);
-                                              },)
-                                            );
-                                          },
-                                          child: CircleAvatar(
-                                            maxRadius: 13,
-                                            backgroundColor: greenColor,
-                                            child: Icon(
-                                              Icons.arrow_outward_rounded,
-                                              size: 16,
-                                              color: grey100Color,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Container(
-                                height: 140,
-                                width: 160,
-                                decoration: BoxDecoration(
-                                  color: grey100Color,
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(20),
-                                  ),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Icon(
-                                            Icons.timer_outlined,
-                                            color: greenColor,
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            'Time Spent',
-                                            style: TextStyle(
-                                              color: blackColor,
-                                              fontSize: 16,
+                                              fontSize: 15,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
@@ -337,52 +363,122 @@ class _ActivityCollectionState extends State<ActivityCollection> {
                                             MainAxisAlignment.spaceAround,
                                         children: [
                                           Text(
-                                            countTotalTime.toString(),
+                                            countTotalExercise.toString(),
                                             style: const TextStyle(
                                               fontWeight: FontWeight.bold,
-                                              fontSize: 30,
+                                              fontSize: 26,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          const Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Exercise',
+                                                style: TextStyle(
+                                                  color: Colors.black26,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              Text(
+                                                'Completed',
+                                                style: TextStyle(
+                                                  color: Colors.black26,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 14,
+                                                ),
+                                              )
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Row(
+                            children: [
+                              Container(
+                                height: 130,
+                                width: 170,
+                                decoration: BoxDecoration(
+                                  color: grey100Color,
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(20),
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.timer_outlined,
+                                            color: greenColor,
+                                            size: 22,
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            'Time Spent',
+                                            style: TextStyle(
+                                              color: blackColor,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Text(
+                                            countTotalTime.toStringAsFixed(2),
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 26,
                                             ),
                                           ),
                                           const Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 'Minutes',
                                                 style: TextStyle(
                                                   color: Colors.black26,
                                                   fontWeight: FontWeight.bold,
+                                                  fontSize: 14,
                                                 ),
                                               ),
                                               Text(
                                                 'Spent',
                                                 style: TextStyle(
-                                                    color: Colors.black26,
-                                                    fontWeight: FontWeight.bold),
+                                                  color: Colors.black26,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 14,
+                                                ),
                                               )
                                             ],
                                           )
                                         ],
-                                      ),
-                                      Align(
-                                        alignment: Alignment.bottomRight,
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            Navigator.of(context, rootNavigator: true).push(
-                                              MaterialPageRoute(builder: (context) {
-                                                return const Progression(typeofProgression: 'timeSpent',);
-                                              },)
-                                            );
-                                          },
-                                          child: CircleAvatar(
-                                            maxRadius: 13,
-                                            backgroundColor: greenColor,
-                                            child: Icon(
-                                              Icons.arrow_outward_rounded,
-                                              size: 16,
-                                              color: grey100Color,
-                                            ),
-                                          ),
-                                        ),
                                       ),
                                     ],
                                   ),
@@ -391,142 +487,293 @@ class _ActivityCollectionState extends State<ActivityCollection> {
                               const SizedBox(
                                 width: 10,
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 20),
-                                child: Container(
-                                  height: 140,
-                                  width: 160,
-                                  decoration: BoxDecoration(
-                                    color: grey100Color,
-                                    borderRadius: const BorderRadius.all(
-                                      Radius.circular(20),
-                                    ),
+                              Container(
+                                height: 130,
+                                width: 170,
+                                decoration: BoxDecoration(
+                                  color: grey100Color,
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(20),
                                   ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.favorite_rounded,
-                                              color: greenColor,
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            Text(
-                                              'Calories',
-                                              style: TextStyle(
-                                                color: blackColor,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 15,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              countTotalCalories.toString(),
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 30,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 10,),
-                                            const Text(
-                                              'Burned',
-                                              style: TextStyle(
-                                                  color: Colors.black26,
-                                                  fontWeight: FontWeight.bold),
-                                            )
-                                          ],
-                                        ),
-                                        Align(
-                                          alignment: Alignment.bottomRight,
-                                          child: GestureDetector(
-                                            onTap: () {
-                                            Navigator.of(context, rootNavigator: true).push(
-                                              MaterialPageRoute(builder: (context) {
-                                                return const Progression(typeofProgression: 'calories',);
-                                              },)
-                                            );
-                                          },
-                                            child: CircleAvatar(
-                                              maxRadius: 13,
-                                              backgroundColor: greenColor,
-                                              child: Icon(
-                                                Icons.arrow_outward_rounded,
-                                                size: 16,
-                                                color: grey100Color,
-                                              ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.favorite_rounded,
+                                            color: greenColor,
+                                            size: 22,
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            'Calories',
+                                            style: TextStyle(
+                                              color: blackColor,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Text(
+                                            countTotalCalories.toString(),
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 26,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 15,
+                                          ),
+                                          const Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Calories',
+                                                style: TextStyle(
+                                                  color: Colors.black26,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              Text(
+                                                'Burned',
+                                                style: TextStyle(
+                                                  color: Colors.black26,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 14,
+                                                ),
+                                              )
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
                             ],
-                          ),
-                        );
-                      }
-                    )
+                          )
+                        ]);
+                      })
                 ],
               ),
             ),
             const SizedBox(
               height: 20,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Badges Collection',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: inputTinyButtonDecoration,
-                  child: Text('View',
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        border: Border(
+                      left: BorderSide(color: greenColor, width: 2),
+                    )),
+                    child: const Row(
+                      children: [
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          'Weekly Leaderboard',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true)
+                          .push(MaterialPageRoute(
+                        builder: (context) {
+                          return const Leaderboard();
+                        },
+                      ));
+                    },
+                    style: inputTinyButtonDecoration,
+                    child: Text(
+                      'View',
                       style: TextStyle(
-                          fontWeight: FontWeight.bold, color: whiteColor)),
-                ),
-              ],
+                        fontWeight: FontWeight.bold,
+                        color: whiteColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            StreamBuilder<List<Student>>(
+              stream: StudentDatabaseService().readAllStudentsRank('students'),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
+
+                final students = snapshot.data ?? [];
+                final currentUserUid = Provider.of<Student?>(context)?.uid;
+                print(currentUserUid);
+                
+                students.sort((a, b) => (b.countTotalCalories ?? 0).compareTo(a.countTotalCalories ?? 0));
+
+                // Find the index of the current user in the sorted list
+                final currentUserIndex = students.indexWhere((student) => student.uid == currentUserUid);
+                
+                // Display user position if found in the sorted list
+                if (currentUserIndex != -1) {
+                  final userPosition = currentUserIndex + 1; // Adding 1 since positions start from 1, not 0
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: grey100Color,
+                      ),
+                      padding: const EdgeInsets.all(15),
+                      alignment: Alignment.centerLeft,
+                      width: MediaQuery.of(context).size.width,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Current position',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Colors.grey
+                            ),
+                          ),
+                          Text(
+                            '$userPosition',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                } else {
+                  return const Text(
+                    'Execute activities to be in the leaderboard',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ); // If user position is not found, display nothing
+                }
+              },
             ),
             const SizedBox(
               height: 20,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Leaderboard',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context, rootNavigator: true)
-                        .push(MaterialPageRoute(
-                      builder: (context) {
-                        return const Leaderboard();
-                      },
-                    ));
-                  },
-                  style: inputTinyButtonDecoration,
-                  child: Text('View',
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        border: Border(
+                      left: BorderSide(color: greenColor, width: 2),
+                    )),
+                    child: const Row(
+                      children: [
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          'Weekly Badges Collection',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true)
+                          .push(MaterialPageRoute(
+                        builder: (context) {
+                          return const BadgesCollection();
+                        },
+                      ));
+                    },
+                    style: inputTinyButtonDecoration,
+                    child: Text(
+                      'View',
                       style: TextStyle(
-                          fontWeight: FontWeight.bold, color: whiteColor)),
+                        fontWeight: FontWeight.bold,
+                        color: whiteColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: SizedBox(
+                height: 100,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 3,
+                  itemBuilder: (context, index) {
+                    List<String> badgeImage = [
+                      'assets/images/60-runner.png',
+                      'assets/images/60-walker.png',
+                      'assets/images/150-minutes_workout.png',
+                    ];
+                    var image = badgeImage[index];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Image.asset(
+                            image,
+                            width: 90,
+                            height:
+                                90,
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
-              ],
-            )
+              ),
+            ),
           ],
         ),
       ],

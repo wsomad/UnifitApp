@@ -37,18 +37,27 @@ class _RunningWalkingBottomSheetState extends State<RunningWalkingBottomSheet> {
           children: [
             const Text(
               'Set Exercise',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(
               height: 20,
             ),
             Column(
               children: [
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Duration',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                const Padding(
+                  padding: EdgeInsets.only(left: 15),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Duration',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(
@@ -103,21 +112,27 @@ class _RunningWalkingBottomSheetState extends State<RunningWalkingBottomSheet> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    print('Duration: ${selectedHours}hours ${selectedMinutes}min ${selectedSeconds}sec');
-                    _timeDetails = TimeDetails(hours: selectedHours,minutes: selectedMinutes, seconds: selectedSeconds);
-                    
-                    if (selectedHours == 0 && selectedMinutes == 0 && selectedSeconds == 0) {
+                    print(
+                        'Duration: ${selectedHours}hours ${selectedMinutes}min ${selectedSeconds}sec');
+                    _timeDetails = TimeDetails(
+                        hours: selectedHours,
+                        minutes: selectedMinutes,
+                        seconds: selectedSeconds);
+
+                    if (selectedHours == 0 &&
+                        selectedMinutes == 0 &&
+                        selectedSeconds == 0) {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return const CustomAlertDialog(
                             title: 'Warning',
-                            message: "You can't proceed by leaving your time duration empty.",
+                            message:
+                                "You can't proceed by leaving your time duration empty.",
                           );
                         },
                       );
-                    }
-                    else {
+                    } else {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -125,6 +140,7 @@ class _RunningWalkingBottomSheetState extends State<RunningWalkingBottomSheet> {
                             programName: widget.programName,
                             selectedExercise: widget.selectedExercise,
                             timeDetails: _timeDetails,
+                            image: '',
                           ),
                         ),
                       );
@@ -159,11 +175,12 @@ class _RunningWalkingBottomSheetState extends State<RunningWalkingBottomSheet> {
             value: index,
             child: Text(
               index.toString().padLeft(2, '0'),
+              style: const TextStyle(fontSize: 16),
             ),
           );
         }),
         onChanged: onChanged,
-        decoration: textInputDecoration.copyWith(
+        decoration: smallTextInputDecoration.copyWith(
           contentPadding: const EdgeInsets.symmetric(horizontal: 20.0),
         ),
       ),

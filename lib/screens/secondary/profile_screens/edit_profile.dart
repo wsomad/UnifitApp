@@ -1,9 +1,12 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:mhs_application/models/exercise_execution.dart';
 import 'package:mhs_application/models/student.dart';
 import 'package:mhs_application/services/user_database.dart';
 import 'package:mhs_application/shared/constant.dart';
 import 'package:provider/provider.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:tuple/tuple.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
@@ -17,17 +20,21 @@ class _EditProfileState extends State<EditProfile> {
   Widget build(BuildContext context) {
     final studentUser = Provider.of<Student>(context);
     TextEditingController usernameController = TextEditingController();
-    TextEditingController facultyController = TextEditingController();
     TextEditingController weightController = TextEditingController();
     TextEditingController heightController = TextEditingController();
+    int currentWeek = ExerciseExecution().getCurrentWeek();
 
-    return StreamBuilder<Student?>(
-      stream: StudentDatabaseService(uid: studentUser.uid)
-          .readCurrentStudentData('${studentUser.uid}','personal'),
+    return StreamBuilder<Student>(
+      stream: StudentDatabaseService().readCurrentStudentData(
+          '${studentUser.uid}', 'personal'),
       builder: (context, snapshot) {
-        final student = snapshot.data;
-
-        //var bmi = student?.weight/(student?.height * student?.height);
+        final personalData = snapshot.data;
+        var weight = personalData?.weight ?? 0.0;
+        var height = personalData?.height ?? 1.0;
+        var bmi = weight / (height / 100 * height / 100);
+        var day = personalData?.dateOfBirth?.day ?? 1;
+        var month = personalData?.dateOfBirth?.month ?? 1;
+        var year = personalData?.dateOfBirth?.year ?? 2000;
 
         return Scaffold(
           body: ListView(
@@ -44,7 +51,7 @@ class _EditProfileState extends State<EditProfile> {
                             Navigator.of(context).pop();
                           },
                           child: Padding(
-                            padding: const EdgeInsets.only(bottom: 10),
+                            padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                             child: Icon(
                               Icons.arrow_back_ios_new_rounded,
                               color: greenColor,
@@ -53,7 +60,7 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                         const Expanded(
                           child: Padding(
-                            padding: EdgeInsets.only(bottom: 10),
+                            padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
                             child: Text(
                               'Edit Profile',
                               textAlign: TextAlign.center,
@@ -68,29 +75,38 @@ class _EditProfileState extends State<EditProfile> {
                       ],
                     ),
                     const SizedBox(
-                      height: 30,
+                      height: 40,
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Username',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.person,
+                              color: greenColor,
+                              size: 24,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            const Text(
+                              'Username',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
                         ),
                         TextField(
                           maxLines: 1,
                           controller: usernameController,
-                          decoration: InputDecoration(
-                            hintText: student?.username,
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: greenColor, width: 2),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: greenColor, width: 2),
-                            ),
+                          decoration: textInputDecoration.copyWith(
+                            hintText: personalData?.username,
                           ),
                           style: const TextStyle(fontSize: 16),
                           onChanged: (text) {
@@ -105,24 +121,38 @@ class _EditProfileState extends State<EditProfile> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Faculty',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.school_rounded,
+                              color: greenColor,
+                              size: 20,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            const Text(
+                              'Faculty',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
                         ),
                         TextField(
                           maxLines: 1,
-                          controller: facultyController,
-                          decoration: InputDecoration(
-                            hintText: student?.faculty,
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: greenColor, width: 2),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: greenColor, width: 2),
-                            ),
+                          readOnly: true,
+                          decoration: textInputDecoration.copyWith(
+                            hintText: personalData?.faculty,
+                            fillColor: grey100Color,
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(15)),
+                                borderSide: BorderSide(color: grey100Color)),
                           ),
                           style: const TextStyle(fontSize: 16),
                           onChanged: (text) {
@@ -132,58 +162,103 @@ class _EditProfileState extends State<EditProfile> {
                       ],
                     ),
                     const SizedBox(
-                      height: 30,
+                      height: 20,
                     ),
-                    /*Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        buildTimeDropdown(selectedDay, getDaysInMonth(selectedMonth, selectedYear), (value) {
-                          setState(() {
-                            selectedDay = value as int;
-                          });
-                        }),
-                        buildTimeDropdown(selectedMonth, 12, (value) {
-                          setState(() {
-                            selectedMonth = value as int;
-                            // Adjust the day dropdown when the month changes
-                            selectedDay = selectedDay > getDaysInMonth(selectedMonth, selectedYear) ? 1 : selectedDay;
-                          });
-                        }),
-                        buildTimeDropdown(selectedYear, DateTime.now().year, (value) {
-                          setState(() {
-                            selectedYear = value as int;
-                            // Adjust the day dropdown when the year changes
-                            selectedDay = selectedDay > getDaysInMonth(selectedMonth, selectedYear) ? 1 : selectedDay;
-                          });
-                        }),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),*/
                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Gender',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.date_range_rounded,
+                              color: greenColor,
+                              size: 22,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            const Text(
+                              'Date of Birth',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ],
                         ),
-                        TextField(
-                          maxLines: 1,
-                          enabled: false,
-                          decoration: InputDecoration(
-                            hintText: (student?.gender),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: greenColor, width: 2),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: 90,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(15)),
+                                color: grey100Color,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  day.toString(),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey[600]
+                                  ),
+                                ),
+                              ),
                             ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: greenColor, width: 2),
+                            const SizedBox(
+                              child: Text(
+                                '-',
+                                style: TextStyle(fontSize: 30),
+                              ),
                             ),
-                          ),
-                          style: const TextStyle(fontSize: 16),
+                            Container(
+                              width: 90,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(15)),
+                                color: grey100Color,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  month.toString(),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey[600]
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              child: Text(
+                                '-',
+                                style: TextStyle(fontSize: 30),
+                              ),
+                            ),
+                            Container(
+                              width: 90,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(15)),
+                                color: grey100Color,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  year.toString(),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey[600]
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         )
                       ],
                     ),
@@ -193,24 +268,79 @@ class _EditProfileState extends State<EditProfile> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Weight (kg)',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.people_alt_rounded,
+                              color: greenColor,
+                              size: 22,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            const Text(
+                              'Gender',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        TextField(
+                          maxLines: 1,
+                          readOnly: true,
+                          decoration: textInputDecoration.copyWith(
+                            hintText: (personalData?.gender),
+                            fillColor: grey100Color,
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(15)),
+                                borderSide: BorderSide(color: grey100Color)),
+                          ),
+                          style: const TextStyle(fontSize: 16),
+                          onChanged: (text) {
+                            // Handle the text change
+                          },
+                        )
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.monitor_weight_outlined,
+                              color: greenColor,
+                              size: 22,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            const Text(
+                              'Weight (kg)',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
                         ),
                         TextField(
                           maxLines: 1,
                           controller: weightController,
-                          decoration: InputDecoration(
-                            hintText: (student?.weight)?.toStringAsFixed(2),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: greenColor, width: 2),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: greenColor, width: 2),
-                            ),
+                          decoration: textInputDecoration.copyWith(
+                            hintText: (personalData?.weight)?.toStringAsFixed(2),
                           ),
                           style: const TextStyle(fontSize: 16),
                           onChanged: (text) {
@@ -225,70 +355,85 @@ class _EditProfileState extends State<EditProfile> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Height (cm)',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
-                        TextField(
-                          maxLines: 1,
-                          controller: heightController,
-                          decoration: InputDecoration(
-                            hintText: (student?.height)?.toStringAsFixed(2),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: greenColor, width: 2),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: greenColor, width: 2),
-                            ),
-                          ),
-                          style: const TextStyle(fontSize: 16),
-                          onChanged: (text) {
-                            // Handle the text change
-                          },
-                        )
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        Row(
                           children: [
-                            Text(
-                              'BMI',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 16),
+                            Icon(
+                              Icons.height_rounded,
+                              color: greenColor,
+                              size: 22,
                             ),
-                            Text(
-                              'Classification',
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            const Text(
+                              'Height (cm)',
                               style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 16),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),
                             ),
                           ],
                         ),
+                        const SizedBox(
+                          height: 10,
+                        ),
                         TextField(
                           maxLines: 1,
+                          readOnly: true,
                           controller: heightController,
-                          decoration: InputDecoration(
-                            prefixText: '12',
-                            prefixStyle: TextStyle(
-                              color: blackColor
+                          decoration: textInputDecoration.copyWith(
+                            hintText: (personalData?.height)?.toStringAsFixed(2),
+                            fillColor: grey100Color,
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(15)),
+                                borderSide: BorderSide(color: grey100Color)),
+                          ),
+                          style: const TextStyle(fontSize: 16),
+                          onChanged: (text) {
+                            // Handle the text change
+                          },
+                        )
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.accessibility_new_rounded,
+                              color: greenColor,
+                              size: 22,
                             ),
-                            suffixText: '45',
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: greenColor, width: 2),
+                            const SizedBox(
+                              width: 10,
                             ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: greenColor, width: 2),
+                            const Text(
+                              'BMI',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),
                             ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        TextField(
+                          maxLines: 1,
+                          readOnly: true,
+                          decoration: textInputDecoration.copyWith(
+                            hintText: bmi.toStringAsFixed(2),
+                            fillColor: grey100Color,
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(15)),
+                                borderSide: BorderSide(color: grey100Color)),
                           ),
                           style: const TextStyle(fontSize: 16),
                           onChanged: (text) {
@@ -306,21 +451,41 @@ class _EditProfileState extends State<EditProfile> {
                             .instance
                             .ref('students/${studentUser.uid}/personal');
 
+                        DatabaseReference ref = FirebaseDatabase.instance.ref(
+                            'students/${studentUser.uid}/execute/week $currentWeek/progress');
+
                         if (usernameController.text.isNotEmpty) {
                           await databaseReference.update({
                             'username': usernameController.text,
                           });
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: const Text(
-                                'Username successfully updated',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold
-                                ),
+                            const SnackBar(
+                              content: Text(
+                                'Username successfully updated.',
+                                style: TextStyle(fontWeight: FontWeight.bold),
                               ),
-                              duration: const Duration(seconds: 5),
-                              backgroundColor: greenColor,
-                              behavior: SnackBarBehavior.floating,
+                              duration: Duration(seconds: 5),
+                            ),
+                          );
+                        }
+
+                        if (weightController.text.isNotEmpty) {
+                          double weight = double.parse(weightController.text);
+                          await databaseReference.update({
+                            'weight': weight,
+                          });
+                          double bmi =
+                              weight / ((height / 100) * (height / 100));
+                          await ref.update({
+                            'bmi': bmi,
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Weight successfully updated.',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              duration: Duration(seconds: 5),
                             ),
                           );
                         }
@@ -329,9 +494,13 @@ class _EditProfileState extends State<EditProfile> {
                       child: Text(
                         'Update',
                         style: TextStyle(
-                            color: whiteColor, fontWeight: FontWeight.bold),
+                          color: whiteColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
-                    )
+                    ),
+                    const SizedBox(height: 40,),
                   ],
                 ),
               ),

@@ -1,14 +1,16 @@
 // ignore_for_file: avoid_print
-
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mhs_application/models/student.dart';
 import 'package:mhs_application/services/database.dart';
+import 'package:mhs_application/services/user_database.dart';
 
 class AuthService {
 
   // Create firebase auth instance
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final DatabaseService _databaseService = DatabaseService();
+  final DatabaseReference studentReference = FirebaseDatabase.instance.ref();
 
   // Create a user object
   Student? _checkStudent(User? user) {
@@ -29,7 +31,7 @@ class AuthService {
       if (newUser != null) {
         print("New user created successfully: ${newUser.uid}");
         try {
-          await _databaseService.createNewData('students/${newUser.uid}', student.toJson());
+          await _databaseService.createNewData('students/${newUser.uid}/credential', student.toJson());
           print("Successfully created student data in the database");
         } catch (databaseError) {
           print("Error storing data in the database: $databaseError");
@@ -70,6 +72,54 @@ class AuthService {
       print(e.toString());
       return false;
     }
+  }
+
+  Future changePassword(String email, String password) async {
+    try {
+      User? existingUser = _firebaseAuth.currentUser;
+      dynamic checkUser = _checkStudent(existingUser);
+
+      if (checkUser != null) {
+        await existingUser?.updatePassword(password);
+        Student student = Student(
+          email: email,
+          password: password,
+        );
+        await _databaseService.updateData('students/${existingUser?.uid}/credential', student.toJson());
+        return true;
+      }
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+
+  Future deleteAccount() async {
+    try {
+      User? existingUser = _firebaseAuth.currentUser;
+      dynamic result = _checkStudent(existingUser);
+
+      if (result != null) {
+        await existingUser?.delete();
+        await StudentDatabaseService().deleteStudentData(existingUser!.uid);
+        print('Successfully deleted.');
+        return true;
+      }
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> checkUserDetails(String userId, String sourcePath) async {
+    final path = studentReference.child('students/$userId/$sourcePath');
+    try {
+      final event = await path.once();
+      return event.snapshot.exists;
+    } catch (e) {
+      return false;
+    }
+
   }
 
 }

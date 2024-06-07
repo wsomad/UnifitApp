@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:mhs_application/models/date.dart';
 import 'package:mhs_application/models/exercise.dart';
 
@@ -61,9 +63,28 @@ class ExerciseExecution extends Exercise {
 
   int getCurrentWeek() {
     DateTime now = DateTime.now();
-    int totalDays = now.difference(DateTime(now.year, 1, 1)).inDays;
-    print('Current week: Week ${((totalDays - 0) ~/ 7) % 4 + 1}');
-    return ((totalDays - 0) ~/ 7) % 4 + 1;
+    // Find the nearest Monday to January 1st of the current year
+    DateTime jan1 = DateTime(now.year, 1, 1);
+    DateTime nearestMonday = jan1.subtract(Duration(days: jan1.weekday - 1));
+    if (jan1.weekday > DateTime.monday) {
+      nearestMonday = nearestMonday.add(const Duration(days: 7));
+    }
+    // Calculate the week number
+    int weekNumber = ((now.difference(nearestMonday).inDays) / 7).floor() + 1;
+    print('Current week: $weekNumber');
+    return weekNumber;
+  }
+
+  DateTime getCurrentWeekStart() {
+    DateTime now = DateTime.now();
+    DateTime startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+    return DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day);
+  }
+
+  DateTime getCurrentWeekEnd() {
+    DateTime now = DateTime.now();
+    DateTime endOfWeek = now.add(Duration(days: DateTime.daysPerWeek - now.weekday));
+    return DateTime(endOfWeek.year, endOfWeek.month, endOfWeek.day, 23, 59, 59);
   }
 
   int getTotalWeeks() {
@@ -73,7 +94,12 @@ class ExerciseExecution extends Exercise {
     return totalWeeks;
   }
 
-  void updateCurrentWeek() {
-    date?.week = getCurrentWeek();
+  int getPreviousWeek() {
+    int currentWeek = getCurrentWeek();
+    int previousWeek = currentWeek - 1;
+    if (previousWeek == 0) {
+      previousWeek = 13;
+    }
+    return previousWeek;
   }
 }

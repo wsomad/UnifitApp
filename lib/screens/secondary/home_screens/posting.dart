@@ -1,5 +1,7 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
-import 'package:mhs_application/shared/bottom_navigation_bar.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mhs_application/shared/constant.dart';
 
 class Posting extends StatefulWidget {
@@ -11,6 +13,19 @@ class Posting extends StatefulWidget {
 
 class _PostingState extends State<Posting> {
   var image = 'assets/images/Profile.png';
+
+  Future<void> _getImageFromGallery() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      // Use the picked image
+      print('Image picked: ${pickedFile.path}');
+    } else {
+      // User canceled the picker
+      print('No image selected.');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +44,7 @@ class _PostingState extends State<Posting> {
                         Navigator.of(context).pop();
                       },
                       child: Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
+                        padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                         child: Icon(
                           Icons.arrow_back_ios_new_rounded,
                           color: greenColor,
@@ -38,12 +53,12 @@ class _PostingState extends State<Posting> {
                     ),
                     const Expanded(
                       child: Padding(
-                        padding: EdgeInsets.only(bottom: 10),
+                        padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
                         child: Text(
                           'New Post',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -53,12 +68,12 @@ class _PostingState extends State<Posting> {
                   ],
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 30,
                 ),
                 Row(
                   children: [
                     CircleAvatar(
-                      radius: 18,
+                      radius: 16,
                       backgroundImage: AssetImage(image),
                     ),
                     const SizedBox(
@@ -69,7 +84,7 @@ class _PostingState extends State<Posting> {
                       style: TextStyle(
                           color: blackColor,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16),
+                          fontSize: 14),
                     )
                   ],
                 ),
@@ -84,17 +99,21 @@ class _PostingState extends State<Posting> {
                         color: greyColor, // Choose your border color
                         width: 2, // Choose the border width
                       ),
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                      borderRadius: const BorderRadius.all(Radius.circular(10))),
                   child: Center(
                     child: TextButton(
                       onPressed: () {
                         print('oh yeahh');
                       },
-                      child: Text(
-                        'Import image from gallery',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: blackColor
+                      child: TextButton(
+                        onPressed: _getImageFromGallery,
+                        child: Text(
+                          'Import image from gallery',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: blackColor,
+                            fontSize: 14
+                          ),
                         ),
                       ),
                     ),
@@ -110,7 +129,7 @@ class _PostingState extends State<Posting> {
                     border: InputBorder.none,
                   ),
                   textAlign: TextAlign.justify,
-                  style: TextStyle(fontSize: 15),
+                  style: const TextStyle(fontSize: 13),
                   onChanged: (text) {
                     // Handle the text change
                   },
@@ -129,7 +148,8 @@ class _PostingState extends State<Posting> {
                     'Post to Community',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: whiteColor
+                      color: whiteColor,
+                      fontSize: 14
                     ),
                   ),
                 ),
