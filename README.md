@@ -15,4 +15,4 @@ Those gamification elements are:
 
 This project is my very first project that was fully developed by myself. Even though I'm not really a good programmer but I do believe if I keep pushing myself, I can be a great Software Engineer in the future. Insya Allah.
 
-During the development of this project, I was very thankful to be surrounded with supportive people: friends, lecturers, parents, family and loved one. Until today, I am still feel grateful to have them in my life. Without them, I am bot be able to finish this project. 
+During the development of this project, I was very thankful to be surrounded with supportive people: friends, lecturers, parents, family and loved one. Until today, I am still feel grateful to have them in my life. Without them, I may not be able to finish this project. 
