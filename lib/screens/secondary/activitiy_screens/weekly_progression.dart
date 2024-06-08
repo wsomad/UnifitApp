@@ -205,7 +205,7 @@ class _WeeklyProgressionState extends State<WeeklyProgression> {
                                       ],
                                     ),
                                   ),
-                                  const SizedBox(height: 10,),
+                                  const SizedBox(height: 5,),
                                 ],
                               );
                             },

@@ -48,10 +48,10 @@ class _SignUpState extends State<SignUp> {
                           child: Center(
                             child: Image(
                               image: AssetImage(
-                                'assets/images/kitafit_logo.png',
+                                'assets/images/unifit_logo.png',
                               ),
                               height: 100,
-                              width: 300,
+                              width: 250,
                             ),
                           ),
                         ),
@@ -223,7 +223,7 @@ class _SignUpState extends State<SignUp> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Don't have any account?",
+                          "Already have an account?",
                           style: TextStyle(
                             color: blackColor,
                             decoration: TextDecoration.none,

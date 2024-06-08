@@ -116,178 +116,181 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 340,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
-                          child: Center(
-                            child: Image(
-                              image: AssetImage(
-                                'assets/images/kitafit_logo.png',
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 340,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
+                            child: Center(
+                              child: Image(
+                                image: AssetImage(
+                                  'assets/images/unifit_logo.png',
+                                ),
+                                height: 100,
+                                width: 250,
                               ),
-                              height: 100,
-                              width: 300,
                             ),
                           ),
-                        ),
-                        Center(
-                          child: Text(
-                            "Sign In Now to Continue.",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                          Center(
+                            child: Text(
+                              "Sign In Now to Continue.",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Email',
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                        ],
                       ),
                     ),
-                  ),
-                  TextFormField(
-                    decoration: textInputDecoration.copyWith(
-                      prefixIcon: Icon(
-                        Icons.email_outlined,
-                        color: greyColor,
-                      ),
-                      hintText: 'Email',
+                    const SizedBox(
+                      height: 20,
                     ),
-                    validator: (String? value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Email cannot be empty.';
-                      } else if (!isEmailValid(value)) {
-                        return 'Email is not valid.';
-                      }
-                      return null;
-                    },
-                    controller: emailController,
-                    onChanged: (value) {
-                      setState(() {
-                        email = value;
-                      });
-                    },
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Password',
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  TextFormField(
-                    decoration: textInputDecoration.copyWith(
-                      prefixIcon: Icon(
-                        Icons.key_rounded,
-                        color: greyColor,
-                      ),
-                      hintText: 'Password',
-                    ),
-                    validator: (String? value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Password cannot be empty.';
-                      } else if (value.length < 6) {
-                        return "Password can't be less than 6 characters.";
-                      }
-                      return null;
-                    },
-                    obscureText: true,
-                    controller: passwordController,
-                    onChanged: (value) {
-                      setState(() {
-                        password = value;
-                      });
-                    },
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  ElevatedButton(
-                    onPressed: _signIn,
-                    style: inputLargeButtonDecoration,
-                    child: Text(
-                      'Sign In',
-                      style: TextStyle(
-                        color: whiteColor,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  if (_errorMessage.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10.0),
+                    const Align(
+                      alignment: Alignment.centerLeft,
                       child: Text(
-                        _errorMessage,
-                        style: TextStyle(color: Colors.red),
+                        'Email',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Don't have any account?",
-                          style: TextStyle(
-                            color: blackColor,
-                            decoration: TextDecoration.none,
-                          ),
+                    TextFormField(
+                      decoration: textInputDecoration.copyWith(
+                        prefixIcon: Icon(
+                          Icons.email_outlined,
+                          color: greyColor,
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const SignUp()),
-                            );
-                          },
-                          child: Text(
-                            " Sign Up",
+                        hintText: 'Email',
+                      ),
+                      validator: (String? value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Email cannot be empty.';
+                        } else if (!isEmailValid(value)) {
+                          return 'Email is not valid.';
+                        }
+                        return null;
+                      },
+                      controller: emailController,
+                      onChanged: (value) {
+                        setState(() {
+                          email = value;
+                        });
+                      },
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Password',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    TextFormField(
+                      decoration: textInputDecoration.copyWith(
+                        prefixIcon: Icon(
+                          Icons.key_rounded,
+                          color: greyColor,
+                        ),
+                        hintText: 'Password',
+                      ),
+                      validator: (String? value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Password cannot be empty.';
+                        } else if (value.length < 6) {
+                          return "Password can't be less than 6 characters.";
+                        }
+                        return null;
+                      },
+                      obscureText: true,
+                      controller: passwordController,
+                      onChanged: (value) {
+                        setState(() {
+                          password = value;
+                        });
+                      },
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    ElevatedButton(
+                      onPressed: _signIn,
+                      style: inputLargeButtonDecoration,
+                      child: Text(
+                        'Sign In',
+                        style: TextStyle(
+                          color: whiteColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    if (_errorMessage.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: Text(
+                          _errorMessage,
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Don't have any account?",
                             style: TextStyle(
-                              color: greenColor,
+                              color: blackColor,
                               decoration: TextDecoration.none,
-                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        )
-                      ],
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const SignUp()),
+                              );
+                            },
+                            child: Text(
+                              " Sign Up",
+                              style: TextStyle(
+                                color: greenColor,
+                                decoration: TextDecoration.none,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

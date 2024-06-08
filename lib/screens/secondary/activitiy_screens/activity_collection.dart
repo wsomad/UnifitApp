@@ -86,10 +86,10 @@ class _ActivityCollectionState extends State<ActivityCollection> {
               child: Center(
                 child: Image(
                   image: AssetImage(
-                    'assets/images/kitafit_logo.png',
+                    'assets/images/unifit_logo.png',
                   ),
                   height: 25,
-                  width: 100,
+                  width: 80,
                 ),
               ),
             ),

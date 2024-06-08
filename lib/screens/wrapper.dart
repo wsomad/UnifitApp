@@ -53,7 +53,7 @@ class _WrapperState extends State<Wrapper> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset('assets/images/kitafit_logo.png', height: 100),
+            Image.asset('assets/images/unifit_logo.png', height: 80),
             const SizedBox(height: 30),
             SpinKitChasingDots(
               color: greenColor,
