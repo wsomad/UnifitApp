@@ -2,9 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mhs_application/models/student.dart';
 import 'package:mhs_application/services/auth.dart';
-import 'package:mhs_application/services/user_database.dart';
+import 'package:mhs_application/services/student_database.dart';
 import 'package:mhs_application/shared/constant.dart';
-import 'package:mhs_application/shared/custom_alert_dialog.dart';
+import 'package:mhs_application/components/custom_dialogs/custom_alert_dialog.dart';
 import 'package:provider/provider.dart';
 
 class EditEmailPassword extends StatefulWidget {

@@ -25,6 +25,7 @@ class _SignUpState extends State<SignUp> {
   String email = '';
   String password = '';
   String confirmPassword = '';
+  String _errorMessage = '';
 
   var currentState;
 
@@ -200,6 +201,19 @@ class _SignUpState extends State<SignUp> {
                                     builder: (context) => const Personal()),
                               );
                             }
+                          }
+                        }
+                        else {
+                          setState(() {
+                            _errorMessage = 'Failed to sign in. User does not exist.';
+                          });
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(_errorMessage),
+                                duration: Duration(seconds: 5),
+                              ),
+                            );
                           }
                         }
                       },

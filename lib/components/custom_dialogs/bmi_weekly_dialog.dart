@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mhs_application/shared/custom_bmi_dialog.dart';
+import 'package:mhs_application/components/custom_dialogs/custom_bmi_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BMIWeeklyDialog {

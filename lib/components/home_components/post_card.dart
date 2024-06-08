@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mhs_application/models/post.dart';
-import 'package:mhs_application/services/user_database.dart';
+import 'package:mhs_application/services/student_database.dart';
 import 'package:mhs_application/shared/constant.dart';
 
 class PostCard extends StatefulWidget {

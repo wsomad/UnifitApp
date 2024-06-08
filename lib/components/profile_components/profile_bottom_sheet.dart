@@ -6,7 +6,7 @@ import 'package:mhs_application/screens/secondary/profile_screens/edit_email_pas
 import 'package:mhs_application/screens/secondary/profile_screens/edit_profile.dart';
 import 'package:mhs_application/services/auth.dart';
 import 'package:mhs_application/shared/constant.dart';
-import 'package:mhs_application/shared/custom_delete_dialog.dart';
+import 'package:mhs_application/components/custom_dialogs/custom_delete_dialog.dart';
 
 class ProfileBottomSheet extends StatefulWidget {
   const ProfileBottomSheet({super.key});

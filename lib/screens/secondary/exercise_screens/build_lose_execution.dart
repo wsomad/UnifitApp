@@ -9,7 +9,7 @@ import 'package:mhs_application/models/exercise.dart';
 import 'package:mhs_application/models/exercise_execution.dart';
 import 'package:mhs_application/models/student.dart';
 import 'package:mhs_application/screens/secondary/exercise_screens/exercise_output.dart';
-import 'package:mhs_application/services/user_database.dart';
+import 'package:mhs_application/services/student_database.dart';
 import 'package:mhs_application/shared/constant.dart';
 import 'package:mhs_application/shared/splash_screen.dart';
 import 'package:provider/provider.dart';

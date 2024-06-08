@@ -10,11 +10,11 @@ import 'package:mhs_application/screens/primary/Program.dart';
 import 'package:mhs_application/screens/secondary/exercise_screens/exercise_collection.dart';
 import 'package:mhs_application/screens/secondary/exercise_screens/exercise_details.dart';
 import 'package:mhs_application/services/exercise_database.dart';
-import 'package:mhs_application/services/user_database.dart';
-import 'package:mhs_application/shared/bmi_weekly_dialog.dart';
+import 'package:mhs_application/services/student_database.dart';
+import 'package:mhs_application/components/custom_dialogs/bmi_weekly_dialog.dart';
 import 'package:mhs_application/shared/constant.dart';
-import 'package:mhs_application/shared/custom_alert_dialog.dart';
-import 'package:mhs_application/shared/custom_bmi_dialog.dart';
+import 'package:mhs_application/components/custom_dialogs/custom_alert_dialog.dart';
+import 'package:mhs_application/components/custom_dialogs/custom_bmi_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

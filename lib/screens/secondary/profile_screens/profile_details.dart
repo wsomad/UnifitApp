@@ -8,7 +8,7 @@ import 'package:mhs_application/components/profile_components/grid_post.dart';
 import 'package:mhs_application/components/profile_components/profile_bottom_sheet.dart';
 import 'package:mhs_application/models/student.dart';
 import 'package:mhs_application/services/image_database.dart';
-import 'package:mhs_application/services/user_database.dart';
+import 'package:mhs_application/services/student_database.dart';
 import 'package:mhs_application/shared/constant.dart';
 import 'package:provider/provider.dart';
 

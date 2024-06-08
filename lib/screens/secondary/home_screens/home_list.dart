@@ -5,7 +5,7 @@ import 'package:mhs_application/components/home_components/post_card.dart';
 import 'package:mhs_application/models/exercise_execution.dart';
 import 'package:mhs_application/screens/secondary/home_screens/posting.dart';
 import 'package:mhs_application/shared/constant.dart';
-import 'package:mhs_application/shared/custom_bmi_dialog.dart';
+import 'package:mhs_application/components/custom_dialogs/custom_bmi_dialog.dart';
 
 class HomeList extends StatefulWidget {
   const HomeList({super.key});

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mhs_application/shared/custom_alert_dialog.dart';
+import 'package:mhs_application/components/custom_dialogs/custom_alert_dialog.dart';
 import 'package:mhs_application/models/exercise.dart';
 import 'package:mhs_application/screens/secondary/exercise_screens/build_lose_execution.dart';
 import 'package:mhs_application/shared/constant.dart';

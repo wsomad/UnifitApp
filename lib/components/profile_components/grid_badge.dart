@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mhs_application/models/badges.dart';
 import 'package:mhs_application/models/exercise_execution.dart';
-import 'package:mhs_application/services/user_database.dart';
+import 'package:mhs_application/services/student_database.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/student.dart';

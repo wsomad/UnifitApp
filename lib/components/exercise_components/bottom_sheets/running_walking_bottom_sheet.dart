@@ -3,7 +3,7 @@ import 'package:mhs_application/models/exercise.dart';
 import 'package:mhs_application/models/time.dart';
 import 'package:mhs_application/screens/secondary/exercise_screens/running_walking_execution.dart';
 import 'package:mhs_application/shared/constant.dart';
-import 'package:mhs_application/shared/custom_alert_dialog.dart';
+import 'package:mhs_application/components/custom_dialogs/custom_alert_dialog.dart';
 
 class RunningWalkingBottomSheet extends StatefulWidget {
   final String programName;
