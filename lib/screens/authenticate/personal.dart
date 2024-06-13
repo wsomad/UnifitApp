@@ -29,7 +29,7 @@ class _PersonalState extends State<Personal> {
   final TextEditingController weightController = TextEditingController();
   final TextEditingController heightController = TextEditingController();
   final TextEditingController facultyController = TextEditingController();
-  final List<String> listOfFaculty = ['FSKM', 'FSG', 'FP'];
+  final List<String> listOfFaculty = ['KPPIM', 'FSG', 'FP'];
   int currentWeek = ExerciseExecution().getCurrentWeek();
 
   String username = '';

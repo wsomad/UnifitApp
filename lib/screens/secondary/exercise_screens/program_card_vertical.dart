@@ -14,9 +14,7 @@ import 'package:mhs_application/services/student_database.dart';
 import 'package:mhs_application/components/custom_dialogs/bmi_weekly_dialog.dart';
 import 'package:mhs_application/shared/constant.dart';
 import 'package:mhs_application/components/custom_dialogs/custom_alert_dialog.dart';
-import 'package:mhs_application/components/custom_dialogs/custom_bmi_dialog.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ProgramCardVertical extends StatefulWidget {
   const ProgramCardVertical({super.key});
@@ -26,22 +24,19 @@ class ProgramCardVertical extends StatefulWidget {
 }
 
 class _ProgramCardVerticalState extends State<ProgramCardVertical> {
-  TextEditingController targetExercise = TextEditingController();
-  TextEditingController targetMinutes = TextEditingController();
-  TextEditingController targetBurned = TextEditingController();
-
   var day = DateTime.now().weekday;
   var currentWeek = ExerciseExecution().getCurrentWeek();
   int previousWeek = ExerciseExecution().getPreviousWeek();
-  bool _isDialogShown = false;
   late final Stream<Student?> studentStream;
-
+  TextEditingController targetExercise = TextEditingController();
+  TextEditingController targetMinutes = TextEditingController();
+  TextEditingController targetBurned = TextEditingController();
   List<String> goals = [];
   List<String> programsName = [
     'Brisk Walking',
     'Running',
     'Muscle Building',
-    'Weight Lose',
+    'Weight Loss',
   ];
   List<String> programsText = [
     'Walk Your Life',
@@ -78,7 +73,6 @@ class _ProgramCardVerticalState extends State<ProgramCardVertical> {
   @override
   Widget build(BuildContext context) {
     final student = Provider.of<Student?>(context, listen: false);
-
     return ListView(
       children: [
         Padding(
@@ -103,11 +97,11 @@ class _ProgramCardVerticalState extends State<ProgramCardVertical> {
                   .asBroadcastStream(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
+                    return const CircularProgressIndicator();
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   } else if (!snapshot.hasData) {
-                    return Text('No data');
+                    return const Text('No data');
                   } else {
                     final student = snapshot.data;
                     var username = student?.username ?? 'null';
@@ -152,7 +146,7 @@ class _ProgramCardVerticalState extends State<ProgramCardVertical> {
                       width: 10,
                     ),
                     Text(
-                      "Daily's target",
+                      "Daily target",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -192,7 +186,7 @@ class _ProgramCardVerticalState extends State<ProgramCardVertical> {
                     child: Icon(
                       Icons.add,
                       color: greenColor,
-                      size: 24,
+                      size: 28,
                     ),
                   ),
                 ],
@@ -216,7 +210,7 @@ class _ProgramCardVerticalState extends State<ProgramCardVertical> {
                       width: 10,
                     ),
                     Text(
-                      'Explore our programs!',
+                      'Explore our programs',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -361,18 +355,18 @@ class _ProgramCardVerticalState extends State<ProgramCardVertical> {
       case 'Muscle Building':
         return ExerciseCollection(
           programName: programNames,
-          exerciseList: [],
+          exerciseList: const [],
           sets: 5,
           reps: 9,
           type: 'Muscle Building',
         );
-      case 'Weight Lose':
+      case 'Weight Loss':
         return ExerciseCollection(
           programName: programNames,
-          exerciseList: [],
+          exerciseList: const [],
           sets: 3,
           reps: 13,
-          type: 'Weight Lose',
+          type: 'Weight Loss',
         );
       case 'Running':
       case 'Brisk Walking':

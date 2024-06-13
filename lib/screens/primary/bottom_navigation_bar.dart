@@ -64,14 +64,7 @@ class _BottomNavigationBarSharedState extends State<BottomNavigationBarShared> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 8),
             child: GNav(
-              tabs: [/*
-                GButton(
-                  icon: Icons.home_filled,
-                  text: 'Home',
-                  textSize: 14,
-                  backgroundColor: greenColor,
-                  iconColor: Colors.grey,
-                ),*/
+              tabs: [
                 GButton(
                   icon: Icons.fitness_center_rounded,
                   text: 'Program',
@@ -85,14 +78,7 @@ class _BottomNavigationBarSharedState extends State<BottomNavigationBarShared> {
                   textSize: 14,
                   backgroundColor: greenColor,
                   iconColor: Colors.grey,
-                ),/*
-                GButton(
-                  icon: Icons.account_circle_sharp,
-                  text: 'Profile',
-                  textSize: 14,
-                  backgroundColor: greenColor,
-                  iconColor: Colors.grey,
-                ),*/
+                ),
               ],
               iconSize: 24,
               backgroundColor: whiteColor,

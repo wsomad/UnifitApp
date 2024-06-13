@@ -73,7 +73,7 @@ class _TodayTargetState extends State<TodayTarget> {
         return AlertDialog(
           title: const Center(
             child: Text(
-              'New Badges Unlocked!',
+              'New Badge Unlocked',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold
@@ -427,85 +427,3 @@ class _TodayTargetState extends State<TodayTarget> {
     );
   }
 }
-
-/*
-Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Target No. of Exercise',
-                          style: TextStyle(
-                            color: blackColor,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        LinearPercentIndicator(
-                          backgroundColor: greyColor,
-                          lineHeight: 8,
-                          progressColor: greenColor,
-                          barRadius: const Radius.circular(10),
-                          percent: progressExercisePercent,
-                          trailing: Text(
-                            targetExerciseValue.toString(),
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold),
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Target Time Spent (min)',
-                          style: TextStyle(
-                            color: blackColor,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        LinearPercentIndicator(
-                          backgroundColor: greyColor,
-                          lineHeight: 8,
-                          progressColor: greenColor,
-                          barRadius: const Radius.circular(10),
-                          percent: progressTimePercent,
-                          trailing: Text(
-                            targetTimeValue.toString(),
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold),
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Target Calories Burned',
-                          style: TextStyle(
-                            color: blackColor,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        LinearPercentIndicator(
-                          backgroundColor: greyColor,
-                          lineHeight: 8,
-                          progressColor: greenColor,
-                          barRadius: const Radius.circular(10),
-                          percent: 0,
-                          trailing: const Text(
-                            '0',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        )
-                      ],
-                    ),*/

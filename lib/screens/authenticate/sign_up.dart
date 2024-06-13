@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print, prefer_interpolation_to_compose_strings, prefer_typing_uninitialized_variables
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mhs_application/models/student.dart';
 import 'package:mhs_application/screens/authenticate/personal.dart';
@@ -28,6 +29,75 @@ class _SignUpState extends State<SignUp> {
   String _errorMessage = '';
 
   var currentState;
+
+  Future<void> _signUp() async {
+    if (_formKey.currentState!.validate()) {
+      Student student = Student(
+        email: email,
+        password: password,
+      );
+      try {
+        dynamic result = await _authService.signUpWithEmailAndPassword(email, password, student);
+        if (result == null) {
+          setState(() {
+            _errorMessage = 'Failed to sign up.';
+          });
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(_errorMessage),
+                duration: Duration(seconds: 5),
+              ),
+            );
+          }
+        } else {
+          print("Successfully signed up!");
+          print("Current User: " + result.uid);
+          if (mounted) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const Personal()),
+            );
+          }
+        }
+      } on FirebaseAuthException catch (e) {
+        String errorMessage;
+        if (e.code == 'invalid-email') {
+          errorMessage = 'The email address is not valid.';
+        } 
+        else if (e.code == 'email-already-in-use') {
+          errorMessage = 'The email address is already in use by another account.';
+        }
+        else {
+          errorMessage = 'Failed to sign up. Please try again.';
+        }
+        setState(() {
+          _errorMessage = errorMessage;
+        });
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(_errorMessage),
+              duration: const Duration(seconds: 5),
+            ),
+          );
+        }
+      } catch (e) {
+        print('Unknown error: $e');
+        setState(() {
+          _errorMessage = 'An unknown error occurred.';
+        });
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(_errorMessage),
+              duration: Duration(seconds: 5),
+            ),
+          );
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -177,53 +247,14 @@ class _SignUpState extends State<SignUp> {
                   Align(
                     alignment: Alignment.bottomRight,
                     child: ElevatedButton(
-                      onPressed: () async {
-                        currentState = _formKey.currentState;
-                        if (currentState != null) {
-                          currentState.validate();
-                          currentState.save();
-                          Student student = Student(
-                            email: email,
-                            password: password,
-                          );
-                          dynamic result =
-                              await _authService.signUpWithEmailAndPassword(
-                                  email, password, student);
-                          if (result == null) {
-                            print("Failed to sign up.");
-                          } else {
-                            print("Successfully signed up!");
-                            print("Current User: " + result.uid);
-                            if (mounted) {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const Personal()),
-                              );
-                            }
-                          }
-                        }
-                        else {
-                          setState(() {
-                            _errorMessage = 'Failed to sign in. User does not exist.';
-                          });
-                          if (mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(_errorMessage),
-                                duration: Duration(seconds: 5),
-                              ),
-                            );
-                          }
-                        }
-                      },
+                      onPressed: _signUp,
                       style: inputLargeButtonDecoration,
                       child: const Text(
                         'Sign Up',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
-                          fontWeight: FontWeight.bold
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),

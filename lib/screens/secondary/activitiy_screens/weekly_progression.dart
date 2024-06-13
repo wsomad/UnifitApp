@@ -26,6 +26,7 @@ class _WeeklyProgressionState extends State<WeeklyProgression> {
             child: Column(
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     GestureDetector(
                       onTap: () {
@@ -41,7 +42,7 @@ class _WeeklyProgressionState extends State<WeeklyProgression> {
                     ),
                     const Expanded(
                       child: Padding(
-                        padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                        padding: EdgeInsets.fromLTRB(60, 20, 0, 0),
                         child: Text(
                           'Progression',
                           textAlign: TextAlign.center,
@@ -52,7 +53,27 @@ class _WeeklyProgressionState extends State<WeeklyProgression> {
                         ),
                       ),
                     ),
-                    const Text('      '),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                      child: Container(
+                        width: 90,
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          color: grey100Color,
+                        ),
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Week $currentWeek',
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: greenColor),
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(
@@ -143,8 +164,6 @@ class _WeeklyProgressionState extends State<WeeklyProgression> {
                               if (value is double && previousValue != null) {
                                 bmiDifference = value - previousValue;
                               }
-
-                              print(bmiDifference);
 
                               return Column(
                                 children: [

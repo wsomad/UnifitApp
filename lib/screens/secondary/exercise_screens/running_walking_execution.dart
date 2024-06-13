@@ -129,36 +129,36 @@ class _RunningWalkingExecutionState extends State<RunningWalkingExecution> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             GestureDetector(
-                            onTap: () async {
-                              // Show confirmation dialog
-                              bool? confirm = await showDialog(
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (BuildContext context) {
-                                  return CustomValidationDialog(
-                                    title: 'Confirmation',
-                                    message: 'Are you sure you want to leave this screen?',
-                                    onYesPressed: () {
-                                      Navigator.of(context).pop(true); // Return true to indicate confirmation
-                                    },
-                                  );
-                                },
-                              );
-                              if (confirm == null) {
-                                return; // Exit without further action
-                              }
-                              if (confirm == true) {
-                                Navigator.of(context).pop(); // If confirmed, pop the Navigator stack
-                              }
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                              child: Icon(
-                                Icons.arrow_back_ios_new_rounded,
-                                color: greenColor,
+                              onTap: () async {
+                                // Show confirmation dialog
+                                bool? confirm = await showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context) {
+                                    return CustomValidationDialog(
+                                      title: 'Confirmation',
+                                      message: 'Are you sure you want to leave this screen?',
+                                      onYesPressed: () {
+                                        Navigator.of(context).pop(true); // Return true to indicate confirmation
+                                      },
+                                    );
+                                  },
+                                );
+                                if (confirm == null) {
+                                  return; // Exit without further action
+                                }
+                                if (confirm == true) {
+                                  Navigator.of(context).pop(); // If confirmed, pop the Navigator stack
+                                }
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                                child: Icon(
+                                  Icons.arrow_back_ios_new_rounded,
+                                  color: greenColor,
+                                ),
                               ),
                             ),
-                          ),
                             Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
@@ -172,19 +172,14 @@ class _RunningWalkingExecutionState extends State<RunningWalkingExecution> {
                                 ),
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                              child: Icon(
-                                Icons.list_rounded,
-                                color: greenColor,
-                                size: 28,
-                              ),
+                            const Text(
+                              '      '
                             ),
                           ],
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                        padding: const EdgeInsets.fromLTRB(20, 50, 20, 0),
                         child: Column(
                           children: [
                             Container(
@@ -257,6 +252,7 @@ class _RunningWalkingExecutionState extends State<RunningWalkingExecution> {
                                 ],
                               ),
                             ),
+                            const SizedBox(height: 20,),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
@@ -375,11 +371,11 @@ class _RunningWalkingExecutionState extends State<RunningWalkingExecution> {
                               ],
                             ),
                             const SizedBox(
-                              height: 80,
+                              height: 40,
                             ),
                             SizedBox(
                               height: 60,
-                              width: 300,
+                              width: MediaQuery.of(context).size.width,
                               child: SliderButton(
                                 action: () async {
                                   double total = totalTime;
@@ -475,7 +471,7 @@ class _RunningWalkingExecutionState extends State<RunningWalkingExecution> {
                                   return null;
                                 },
                                 label: Padding(
-                                  padding: const EdgeInsets.only(right: 50),
+                                  padding: const EdgeInsets.only(right: 70),
                                   child: Text(
                                     'Slide to complete',
                                     style: TextStyle(

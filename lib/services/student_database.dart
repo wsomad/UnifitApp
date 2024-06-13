@@ -70,53 +70,20 @@ class StudentDatabaseService {
     }
   }
 
-/*
-  // Read all student rank data
-  Stream<List<Student>> readAllStudentsRank(String sourcePath) async* {
-    var ref = studentReference.child(sourcePath);
-
-    await for (var event in ref.onValue) {
-      List<Student> students = [];
-      try {
-        for (final child in event.snapshot.children) {
-          if (child.value != null) {
-            Map<Object?, Object?> rawData = child.value as Map<Object?, Object?>;
-            Map<String, dynamic> data = json.decode(json.encode(rawData));
-            //print('Raw Data: $rawData');
-            print('Decoded Data: $data');
-            students.add(Student.fromJson(data));
-          }
-        }
-      } catch (e) {
-        print('Error: $e');
-      }
-      yield students;
-    }
-  }*/
-
   Stream<Student> readStudentBadges(String userId, String sourcePath) async* {
     var ref = studentReference.child('students/$userId/$sourcePath');
-    List<Student> students = [];
 
     try {
       List<Badges> badges = [];
-
       await for (var event in ref.onValue) {
         for (final child in event.snapshot.children) {
           if (child.value != null) {
             Map<Object?, Object?> userData = child.value as Map<Object?, Object?>;
             Map<String, dynamic> badge = json.decode(json.encode(userData));
-            print('User data: $userData');
-            print('Badge: $badge');
-
             String badgeID = badge['badgeID'];
-            print('Badge ID: $badgeID');
             String badgeName = badge['badgeName'];
-            print('Badge Name: $badgeName');
             String badgeImagePath = badge['badgeImagePath'];
-            print('Badge Image: $badgeImagePath');
             String badgeType = badge['badgeType'];
-            print('Badge Type: $badgeType');
 
             // Create a Badges object for each badge
             Badges badge2 = Badges(
@@ -127,112 +94,46 @@ class StudentDatabaseService {
             );
             // Add the badge to the list
             badges.add(badge2);
-
-            /*
-            List<Badges> badgesList = [];
-            badge.forEach((key, value) {
-              // Extract badge details from each entry
-              String badgeID = value['badgeID'];
-              String badgeName = value['badgeName'];
-              String badgeImagePath = value['badgeImagePath'];
-              String badgeType = value['badgeType'];
-
-              // Create a Badges object for each badge
-              Badges badge = Badges(
-                badgeID: badgeID,
-                badgeName: badgeName,
-                badgeImagePath: badgeImagePath,
-                badgeType: badgeType,
-              );
-              print(badge);
-              // Add the badge to the list
-              badgesList.add(badge);
-            });
-            */
-
-            // Create a Student object with the retrieved data
-            //Student student = Student(badge: badges);
-            //students.add(student);
-            //yield Student(badge: [badge2]);
-
-            /*
-            if (userData != null && userData.containsKey('badge')) {
-
-              Map<Object?, Object?> badgeData = userData['badge'] as Map<Object?, Object?>;
-              Map<String, dynamic> badge = json.decode(json.encode(badgeData));
-              print('Check badge: $badge');
-
-              if (badge != null && badge.containsKey('week $currentWeek')) {
-
-                Map<Object?, Object?>  currentWeekData = badge['week $currentWeek'] as Map<Object?, Object?> ;
-                Map<String, dynamic> week = json.decode(json.encode(currentWeekData));
-                print('Check week: $week');
-
-                if (week != null && week.containsKey('badge')) {
-
-                  Map<Object?, Object?> progressData = week['badge'] as Map<Object?, Object?>;
-                  Map<String, dynamic> badge2 = json.decode(json.encode(progressData));
-                  print('Check badge2: $badge2');
-
-                  if (badge2 != null) {
-                    
-                    
-                  }
-                }
-              }
-              else {
-                print('No data for week $currentWeek for user: $userId');
-                
-              }
-            }*/
           }
         }
         if (badges.isNotEmpty) {
         // If badges are collected, yield a single Student object containing all badges
         yield Student(badge: badges);
       }
-      }/*
-      if (badges.isNotEmpty) {
-        // If badges are collected, yield a single Student object containing all badges
-        yield Student(badge: badges);
-      }*/
+      }
     } catch (e) {
       print('Error: $e');
     }
-    //yield students;
   }
 
   Stream<List<MapEntry<String, dynamic>>> displayBMI(String userId) async* {
-  final DatabaseReference ref = FirebaseDatabase.instance.ref().child('students/$userId/execute');
-  final snapshot = await ref.once();
+    final DatabaseReference ref = FirebaseDatabase.instance.ref().child('students/$userId/execute');
+    final snapshot = await ref.once();
 
-  final weekBmis = <MapEntry<String, dynamic>>[];
+    final weekBmis = <MapEntry<String, dynamic>>[];
 
-  if (snapshot.snapshot.value != null) {
-    Map<Object?, Object?> rawData = snapshot.snapshot.value as Map<Object?, Object?>;
-    Map<String, dynamic> execute = json.decode(json.encode(rawData));
+    if (snapshot.snapshot.value != null) {
+      Map<Object?, Object?> rawData = snapshot.snapshot.value as Map<Object?, Object?>;
+      Map<String, dynamic> execute = json.decode(json.encode(rawData));
 
-    int currentWeek = ExerciseExecution().getCurrentWeek();
+      int currentWeek = ExerciseExecution().getCurrentWeek();
 
-    for (int i = 1; i <= currentWeek; i++) {
-      String weekKey = 'week $i';
-      if (execute.containsKey(weekKey) && execute[weekKey]['progress'] != null && execute[weekKey]['progress']['bmi'] != null) {
-        double bmi = execute[weekKey]['progress']['bmi'];
-        print('$weekKey $bmi');
-        weekBmis.add(MapEntry(weekKey, bmi));
-      } else {
-        weekBmis.add(MapEntry(weekKey, 'No data'));
+      for (int i = 1; i <= currentWeek; i++) {
+        String weekKey = 'week $i';
+        if (execute.containsKey(weekKey) && execute[weekKey]['progress'] != null && execute[weekKey]['progress']['bmi'] != null) {
+          double bmi = execute[weekKey]['progress']['bmi'];
+          weekBmis.add(MapEntry(weekKey, bmi));
+        } else {
+          weekBmis.add(MapEntry(weekKey, 'No data'));
+        }
+      }
+    } else {
+      for (int i = 1; i <= ExerciseExecution().getCurrentWeek(); i++) {
+        weekBmis.add(MapEntry('week $i', 'No data'));
       }
     }
-  } else {
-    for (int i = 1; i <= ExerciseExecution().getCurrentWeek(); i++) {
-      weekBmis.add(MapEntry('week $i', 'No data'));
-    }
+    yield weekBmis;
   }
-
-  yield weekBmis;
-}
-
 
   Stream<List<Student>> readAllStudentsRank(String sourcePath) async* {
     var ref = studentReference.child(sourcePath);
@@ -245,52 +146,26 @@ class StudentDatabaseService {
             String userId = child.key as String;
             Map<Object?, Object?> userData = child.value as Map<Object?, Object?>;
 
-            if (userData != null && userData.containsKey('personal')) {
+            if (userData.containsKey('personal')) {
               Map<Object?, Object?> personalData = userData['personal'] as Map<Object?, Object?>;
-              Map<String, dynamic> data = json.decode(json.encode(personalData));
+              Map<String, dynamic> decodePersonalData = json.decode(json.encode(personalData));
               Map<Object?, Object?> executeData = userData['execute'] as Map<Object?, Object?>;
-              Map<String, dynamic> data1 = json.decode(json.encode(executeData));
-              if (data1 != null && data1.containsKey('week $currentWeek')) {
+              Map<String, dynamic> decodeExecuteData = json.decode(json.encode(executeData));
+              if (decodeExecuteData.containsKey('week $currentWeek')) {
                 Map<Object?, Object?>  currentWeekData = executeData['week $currentWeek'] as Map<Object?, Object?> ;
-                Map<String, dynamic> data2 = json.decode(json.encode(currentWeekData));
-                if (data2 != null && data2.containsKey('progress')) {
+                Map<String, dynamic> decodeCurrentWeekData = json.decode(json.encode(currentWeekData));
+                if (decodeCurrentWeekData.containsKey('progress')) {
                   Map<Object?, Object?> progressData = currentWeekData['progress'] as Map<Object?, Object?>;
-                  Map<String, dynamic> data3 = json.decode(json.encode(progressData));
+                  Map<String, dynamic> decodeProgressData = json.decode(json.encode(progressData));
 
-                  if (data != null || data1 != null && data2 != null) {
-                    String? username = data['username'] as String?;
-                    String? faculty = data['faculty'] as String?;
-                    int? totalCalories = data3['countTotalCalories'] as int?;
-
-                    // Create a Student object with the retrieved data
-                    Student student = Student(uid: userId, username: username, faculty: faculty, countTotalCalories: totalCalories);
-                    students.add(student);
-                  }
+                  String? username = decodePersonalData['username'] as String?;
+                  String? faculty = decodePersonalData['faculty'] as String?;
+                  int? totalCalories = decodeProgressData['countTotalCalories'] as int?;
+                  Student student = Student(uid: userId, username: username, faculty: faculty, countTotalCalories: totalCalories);
+                  students.add(student);
                 }
               }
             }
-            
-            /*
-            if (userData != null) {
-              Map<Object?, Object?> personalData = userData['personal'] as Map<Object?, Object?>;
-              Map<String, dynamic> data1 = json.decode(json.encode(personalData));
-              print('Check 1: $data1');
-              Map<Object?, Object?> progressData = userData['execute'] as Map<Object?, Object?>;
-              Map<String, dynamic> data2 = json.decode(json.encode(progressData));
-              print('Check 2: $data2');
-
-              if (data1 != null && data2 != null) {
-                String username = data1['username'] as String;
-                print('Username: $username');
-                String faculty = data1['faculty'] as String;
-                int? totalCalories = data2['countTotalCalories'] as int?;
-                print('Total Calories: $totalCalories');
-
-                // Create a Student object with the retrieved data
-                Student student = Student(uid: userId, username: username, faculty: faculty, countTotalCalories: totalCalories);
-                students.add(student);
-              }
-            }*/
           }
         }
       } catch (e) {
@@ -299,39 +174,6 @@ class StudentDatabaseService {
       yield students;
     }
   }
-
-  /*
-  Stream<List<Student>> readAllStudentsData() async* {
-    var ref = studentReference.child('students');
-
-    await for (var snapshot in ref.onValue) {
-      List<Student> studentsData = [];
-      try {
-        // Iterate over the children of the 'students' node
-        for (var childSnapshot in snapshot.snapshot.children) {
-          // Get the user ID (key) of the child node
-          var userId = childSnapshot.key;
-          
-          // Get the value (data) of the child node
-          var userData = childSnapshot.value;
-
-          Map<Object?, Object?> rawData = userData as Map<Object?, Object?>;
-          Map<String, dynamic> data = json.decode(json.encode(rawData));
-
-          // Add the user ID to the userData map for reference
-          data['userId'] = userId;
-          print(data['userId']);
-
-          // Add the user data to the list
-          studentsData.add(Student.fromJson(data));
-        }
-      } catch (e) {
-        print('Error fetching students data: $e');
-      }
-      // Yield the list of students' data
-      yield studentsData;
-    }
-  }*/
 
   // Delete student data
   Future<void> deleteStudentData(String userId) async {

@@ -34,11 +34,9 @@ class _SignInState extends State<SignIn> {
   Future<void> _signIn() async {
     if (_formKey.currentState!.validate()) {
       try {
-        dynamic result =
-            await _authService.signInWithEmailAndPassword(email, password);
+        dynamic result = await _authService.signInWithEmailAndPassword(email, password);
         if (result != null) {
-          bool userDetailsFilled =
-              await checkUserDetails(result.uid, 'personal');
+          bool userDetailsFilled = await checkUserDetails(result.uid, 'personal');
           if (!mounted) return;
           if (userDetailsFilled) {
             Navigator.push(
@@ -55,7 +53,8 @@ class _SignInState extends State<SignIn> {
               ),
             );
           }
-        } else {
+        } 
+        else {
           setState(() {
             _errorMessage = 'Failed to sign in. User does not exist.';
           });
@@ -69,37 +68,30 @@ class _SignInState extends State<SignIn> {
           }
         }
       } on FirebaseAuthException catch (e) {
+        String errorMessage;
+        if (e.code == 'invalid-email') {
+          errorMessage = 'The email address is not valid.';
+        } 
+        else if (e.code == 'user-not-found') {
+          errorMessage = 'No user found for that email.';
+        }
+        else if (e.code == 'wrong-password') {
+          errorMessage = 'Incorrect password provided for that user.';
+        }
+        else {
+          errorMessage = 'Failed to sign up. Please try again.';
+        }
         setState(() {
-          if (e.code == 'invalid-email') {
-            _errorMessage = 'Invalid email address.';
-          } else if (e.code == 'user-disabled') {
-            _errorMessage = 'This user has been disabled.';
-          } else if (e.code == 'user-not-found') {
-            _errorMessage = 'No user found for that email.';
-          } else if (e.code == 'wrong-password') {
-            _errorMessage = 'Wrong password provided for that user.';
-          } else {
-            _errorMessage = 'Error: ${e.message}';
-          }
+          _errorMessage = errorMessage;
         });
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(_errorMessage),
-              duration: Duration(seconds: 5),
+              duration: const Duration(seconds: 5),
             ),
           );
         }
-      } on PlatformException catch (e) {
-        setState(() {
-          _errorMessage = 'Error: ${e.message}';
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(_errorMessage),
-            duration: Duration(seconds: 5),
-          ),
-        );
       } catch (e) {
         setState(() {
           _errorMessage = 'An unknown error occurred.';
@@ -246,14 +238,6 @@ class _SignInState extends State<SignIn> {
                         ),
                       ),
                     ),
-                    if (_errorMessage.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10.0),
-                        child: Text(
-                          _errorMessage,
-                          style: TextStyle(color: Colors.red),
-                        ),
-                      ),
                     const SizedBox(
                       height: 20,
                     ),

@@ -38,34 +38,49 @@ class CustomValidationDialog extends StatelessWidget {
         ],
       ),
       actions: <Widget>[
-        ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          style: inputTinyButtonDecoration,
-          child: Text(
-            'No',
-            style: TextStyle(
-              color: whiteColor,
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            SizedBox(
+              width: 120,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                style: inputSmallButtonDecoration.copyWith(
+                  backgroundColor: MaterialStatePropertyAll(greyColor)
+                ),
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(
+                    color: whiteColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            onYesPressed();
-            Navigator.of(context).pop();
-          },
-          style: inputTinyButtonDecoration,
-          child: Text(
-            'Yes',
-            style: TextStyle(
-              color: whiteColor,
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
+            SizedBox(
+              width: 120,
+              child: ElevatedButton(
+                onPressed: () async {
+                  onYesPressed();
+                  Navigator.of(context).pop();
+                },
+                style: inputSmallButtonDecoration.copyWith(
+                  backgroundColor: MaterialStatePropertyAll(greenColor)
+                ),
+                child: Text(
+                  'Confirm',
+                  style: TextStyle(
+                    color: whiteColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       ],
       backgroundColor: whiteColor,

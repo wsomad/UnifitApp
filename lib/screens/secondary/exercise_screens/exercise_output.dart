@@ -15,8 +15,8 @@ class ExerciseOutput extends StatefulWidget {
   final int rep;
   final String image;
 
-  ExerciseOutput({
-    Key? key,
+  const ExerciseOutput({
+    super.key,
     required this.finalReps,
     required this.programName,
     required this.selectedExercise,
@@ -26,7 +26,7 @@ class ExerciseOutput extends StatefulWidget {
     this.set = 0,
     this.rep = 0,
     required this.image,
-  }) : super(key: key);
+  });
 
   @override
   State<ExerciseOutput> createState() => _ExerciseOutputState();
@@ -36,30 +36,25 @@ class _ExerciseOutputState extends State<ExerciseOutput> {
   @override
   Widget build(BuildContext context) {
     var exerciseName = widget.exerciseName;
-
     var set = widget.set;
+    var rep = widget.rep;
+    var time = widget.timeSpent;
+    
     int convertSet = set.toInt();
     String exerciseSet = convertSet.toString();
-
-    var rep = widget.rep;
-    int totalRep = rep * set;
-    int convertRep = totalRep.toInt();
-    String exerciseRep = convertRep.toString();
-
-    var time = widget.timeSpent;
     double convert = time.toDouble();
     String timeSpent = convert.toString();
-    var exerciseImage = 'assets/images/Barbell_Bench_Press_-_Medium_Grip_0.jpg';
 
     if (widget.selectedExercise.level!.isNotEmpty) {
-          widget.selectedExercise.level = widget.selectedExercise.level![0].toUpperCase() +
-              widget.selectedExercise.level!.substring(1).toLowerCase();
-        }
+      widget.selectedExercise.level = widget.selectedExercise.level![0].toUpperCase() +
+          widget.selectedExercise.level!.substring(1).toLowerCase();
+    }
 
-        if (widget.selectedExercise.equipment!.isNotEmpty) {
-          widget.selectedExercise.equipment = widget.selectedExercise.equipment![0].toUpperCase() +
-              widget.selectedExercise.equipment!.substring(1).toLowerCase();
-        }
+    if (widget.selectedExercise.equipment!.isNotEmpty) {
+      widget.selectedExercise.equipment = widget.selectedExercise.equipment![0].toUpperCase() +
+          widget.selectedExercise.equipment!.substring(1).toLowerCase();
+    }
+    
     return PopScope(
       canPop: false,
       child: Scaffold(
@@ -70,7 +65,7 @@ class _ExerciseOutputState extends State<ExerciseOutput> {
               child: Column(
                 children: [
                   const Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                    padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
                     child: Text(
                       'Summary',
                       style: TextStyle(
@@ -155,180 +150,171 @@ class _ExerciseOutputState extends State<ExerciseOutput> {
                   const SizedBox(
                     height: 10,
                   ),
-                  /*
-                  Builder(builder: (context) {
-                    if (widget.programName == 'Muscle Building' || widget.programName == 'Weight Lose') {
-                      return 
-                    }
-                    else {
-                      return SizedBox();
-                    }
-                  },),*/
                   Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            height: 130,
-                            width: 170,
-                            decoration: BoxDecoration(
-                              color: grey100Color,
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(20),
-                              ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        height: 130,
+                        width: 170,
+                        decoration: BoxDecoration(
+                          color: grey100Color,
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(20),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Column(
+                            crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                            children: [
+                              Row(
                                 children: [
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.timelapse_rounded,
-                                        color: greenColor,
-                                        size: 22,
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text(
-                                        'Total Time',
-                                        style: TextStyle(
-                                          color: blackColor,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
+                                  Icon(
+                                    Icons.timelapse_rounded,
+                                    color: greenColor,
+                                    size: 22,
                                   ),
                                   const SizedBox(
-                                    height: 15,
+                                    width: 10,
                                   ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Text(
-                                        timeSpent,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 26,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      const Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Mins',
-                                            style: TextStyle(
-                                              color: Colors.black26,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Spent',
-                                            style: TextStyle(
-                                              color: Colors.black26,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 14,
-                                            ),
-                                          )
-                                        ],
-                                      )
-                                    ],
+                                  Text(
+                                    'Total Time',
+                                    style: TextStyle(
+                                      color: blackColor,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ],
                               ),
-                            ),
-                          ),
-                          Container(
-                            height: 130,
-                            width: 170,
-                            decoration: BoxDecoration(
-                              color: grey100Color,
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(20),
+                              const SizedBox(
+                                height: 15,
                               ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.favorite_rounded,
-                                        color: greenColor,
-                                        size: 22,
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text(
-                                        'Total Calories',
-                                        style: TextStyle(
-                                          color: blackColor,
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
+                                  Text(
+                                    timeSpent,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 26,
+                                    ),
                                   ),
                                   const SizedBox(
-                                    height: 15,
+                                    width: 10,
                                   ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
+                                  const Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        (widget.caloriesBurned).toString(),
-                                        style: const TextStyle(
+                                        'Mins',
+                                        style: TextStyle(
+                                          color: Colors.black26,
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 26,
+                                          fontSize: 14,
                                         ),
                                       ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      const Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Calories',
-                                            style: TextStyle(
-                                              color: Colors.black26,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Burned',
-                                            style: TextStyle(
-                                              color: Colors.black26,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 14,
-                                            ),
-                                          )
-                                        ],
+                                      Text(
+                                        'Spent',
+                                        style: TextStyle(
+                                          color: Colors.black26,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
                                       )
                                     ],
-                                  ),
+                                  )
                                 ],
                               ),
-                            ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
+                      Container(
+                        height: 130,
+                        width: 170,
+                        decoration: BoxDecoration(
+                          color: grey100Color,
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(20),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Column(
+                            crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.favorite_rounded,
+                                    color: greenColor,
+                                    size: 22,
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    'Total Calories',
+                                    style: TextStyle(
+                                      color: blackColor,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Text(
+                                    (widget.caloriesBurned).toString(),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 26,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  const Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Calories',
+                                        style: TextStyle(
+                                          color: Colors.black26,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      Text(
+                                        'Burned',
+                                        style: TextStyle(
+                                          color: Colors.black26,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   const SizedBox(
                     height: 30,
                   ),
@@ -542,6 +528,3 @@ class _ExerciseOutputState extends State<ExerciseOutput> {
     );
   }
 }
-
-/*
-*/

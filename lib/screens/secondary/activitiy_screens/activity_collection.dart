@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mhs_application/components/profile_components/profile_bottom_sheet.dart';
 import 'package:mhs_application/models/exercise_execution.dart';
 import 'package:mhs_application/models/student.dart';
@@ -21,38 +22,6 @@ class _ActivityCollectionState extends State<ActivityCollection> {
   var day = DateTime.now().weekday;
   var currentWeek = ExerciseExecution().getCurrentWeek();
   int previousWeek = ExerciseExecution().getPreviousWeek();
-/*
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      checkForNewWeek();
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  void checkForNewWeek() async {
-    if (currentWeek != previousWeek) {
-      if (day == 1) {
-        if (mounted) {
-          showDialog(
-            context: context,
-            builder: (context) {
-              return const CustomInputDialog(
-                title: 'Requirement',
-                message:
-                    'By updating your weight every week, we can determine your latest BMI and ideal BMI for you to achieved.',
-              );
-            },
-          );
-        }
-      }
-    }
-  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -147,7 +116,7 @@ class _ActivityCollectionState extends State<ActivityCollection> {
                           )),
                           child: const Row(
                             children: [
-                               SizedBox(
+                              SizedBox(
                                 width: 10,
                               ),
                               Text(
@@ -245,7 +214,9 @@ class _ActivityCollectionState extends State<ActivityCollection> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
                                                 children: [
                                                   Text(
                                                     bmi.toStringAsFixed(2),
@@ -296,7 +267,8 @@ class _ActivityCollectionState extends State<ActivityCollection> {
                                                 builder: (context) {
                                                   return const CustomInputDialog(
                                                     title: 'Requirement',
-                                                    message: 'Kindly update your weight',
+                                                    message:
+                                                        'Kindly update your weight',
                                                   );
                                                 },
                                               );
@@ -636,17 +608,17 @@ class _ActivityCollectionState extends State<ActivityCollection> {
                 }
 
                 final students = snapshot.data ?? [];
-                final currentUserUid = Provider.of<Student?>(context)?.uid;
-                print(currentUserUid);
-                
-                students.sort((a, b) => (b.countTotalCalories ?? 0).compareTo(a.countTotalCalories ?? 0));
+                final studentUser = Provider.of<Student?>(context)?.uid;
+                students.sort((a, b) => (b.countTotalCalories ?? 0)
+                    .compareTo(a.countTotalCalories ?? 0));
 
-                // Find the index of the current user in the sorted list
-                final currentUserIndex = students.indexWhere((student) => student.uid == currentUserUid);
-                
+                final currentUserIndex = students
+                    .indexWhere((student) => student.uid == studentUser);
+
                 // Display user position if found in the sorted list
                 if (currentUserIndex != -1) {
-                  final userPosition = currentUserIndex + 1; // Adding 1 since positions start from 1, not 0
+                  final userPosition = currentUserIndex +
+                      1; // Adding 1 since positions start from 1, not 0
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Container(
@@ -663,10 +635,9 @@ class _ActivityCollectionState extends State<ActivityCollection> {
                           const Text(
                             'Current position',
                             style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: Colors.grey
-                            ),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.grey),
                           ),
                           Text(
                             '$userPosition',
@@ -744,36 +715,73 @@ class _ActivityCollectionState extends State<ActivityCollection> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: SizedBox(
+              child: Container(
                 height: 100,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 3,
-                  itemBuilder: (context, index) {
-                    List<String> badgeImage = [
-                      'assets/images/60-runner.png',
-                      'assets/images/60-walker.png',
-                      'assets/images/150-minutes_workout.png',
-                    ];
-                    var image = badgeImage[index];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Image.asset(
-                            image,
-                            width: 90,
-                            height:
-                                90,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                    color: grey100Color,
+                    borderRadius: BorderRadius.circular(10)),
+                padding: const EdgeInsets.fromLTRB(15, 15, 0, 15),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                     Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Burn Calories &',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.grey,
                           ),
-                        ],
-                      ),
-                    );
-                  },
+                        ),
+                        Text(
+                          'Collect All Badges',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Stack(
+                      children: [
+                        Positioned(
+                          left: 100, 
+                          child: Image(
+                            image: AssetImage('assets/images/500.png'),
+                            height: 70,
+                            width: 80,
+                          ),
+                        ),
+                        Positioned(
+                          left: 55,
+                          child: Image(
+                            image: AssetImage('assets/images/1000.png'),
+                            height: 70,
+                            width: 90,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(right: 60),
+                          child: Image(
+                            image: AssetImage('assets/images/3000.png'),
+                            height: 100,
+                            width: 120,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),
+            const SizedBox(
+              height: 20,
+            )
           ],
         ),
       ],

@@ -44,7 +44,7 @@ class _BadgesCollectionState extends State<BadgesCollection> {
                     ),
                     const Expanded(
                       child: Padding(
-                        padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                        padding: EdgeInsets.fromLTRB(60, 20, 0, 0),
                         child: Text(
                           'Badges',
                           textAlign: TextAlign.center,
@@ -55,7 +55,27 @@ class _BadgesCollectionState extends State<BadgesCollection> {
                         ),
                       ),
                     ),
-                    const Text('      '),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                      child: Container(
+                        width: 90,
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          color: grey100Color,
+                        ),
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Week $currentWeek',
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: greenColor),
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(
@@ -101,30 +121,29 @@ class _BadgesCollectionState extends State<BadgesCollection> {
           ),
         ),
         const SizedBox(height: 20),
-        StreamBuilder<Student>(
-          stream: StudentDatabaseService().readStudentBadges('${studentUser.uid}', 'badge/week $currentWeek/badge'),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
+        FutureBuilder<List<Badges?>>(
+          future: BadgeDatabaseService().readBadgeDetails(path),
+          builder: (context, badgeSnapshot) {
+            if (badgeSnapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
+            } else if (badgeSnapshot.hasError) {
               return const Center(child: Text('Error loading data'));
-            } else if (!snapshot.hasData || snapshot.data == null) {
-              return const Center(child: Text('No data available'));
+            } else if (!badgeSnapshot.hasData || badgeSnapshot.data!.isEmpty) {
+              return const Center(child: Text('No badges available'));
             } else {
-              final studentData = snapshot.data!;
-              final obtainedBadgeIds = studentData.badge?.map((badge) => badge.badgeID).toSet() ?? {};
+              // Pastikan data badges sentiasa ada
+              final badges = badgeSnapshot.data!;
+              badges.sort((a, b) => int.parse(a!.category!).compareTo(int.parse(b!.category!)));
 
-              return FutureBuilder<List<Badges?>>(
-                future: BadgeDatabaseService().readBadgeDetails(path),
-                builder: (context, badgeSnapshot) {
-                  if (badgeSnapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (badgeSnapshot.hasError) {
+              return StreamBuilder<Student>(
+                stream: StudentDatabaseService().readStudentBadges('${studentUser.uid}', 'badge/week $currentWeek/badge'),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
                     return const Center(child: Text('Error loading data'));
-                  } else if (badgeSnapshot.hasData && badgeSnapshot.data!.isEmpty) {
-                    return const Center(child: Text('No badges available'));
                   } else {
-                    badgeSnapshot.data!.sort((a, b) => (a!.category ?? '0').compareTo(b!.category ?? '0'));
+                    final Set<String?> obtainedBadgeIds = snapshot.hasData && snapshot.data != null
+                        ? snapshot.data!.badge?.map((badge) => badge.badgeID).toSet() ?? {}
+                        : {};
                     return GridView.builder(
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3,
@@ -132,12 +151,11 @@ class _BadgesCollectionState extends State<BadgesCollection> {
                       ),
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: badgeSnapshot.data!.length,
+                      itemCount: badges.length,
                       itemBuilder: (BuildContext context, index) {
-                        Badges? badge = badgeSnapshot.data![index];
+                        Badges? badge = badges[index];
                         final badgeName = badge?.badgeName ?? 'No data';
                         final badgeImage = badge?.badgeImagePath;
-
                         bool isObtained = obtainedBadgeIds.contains(badge?.badgeID);
 
                         return SizedBox(
@@ -151,7 +169,7 @@ class _BadgesCollectionState extends State<BadgesCollection> {
                                     height: 80,
                                     width: 80,
                                   ),
-                                  if (!isObtained) 
+                                  if (!isObtained)
                                     Positioned.fill(
                                       child: Align(
                                         alignment: Alignment.center,
@@ -165,14 +183,23 @@ class _BadgesCollectionState extends State<BadgesCollection> {
                                 ],
                               ),
                               const SizedBox(height: 10),
-                              Text(
-                                badgeName,
-                                textAlign: TextAlign.center,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: blackColor,
+                              Container(
+                                width: 90,
+                                decoration: BoxDecoration(
+                                  borderRadius:
+                                      const BorderRadius.all(Radius.circular(10)),
+                                  color: grey100Color,
+                                ),
+                                child: Text(
+                                  badgeName,
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: greenColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ],

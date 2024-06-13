@@ -87,8 +87,7 @@ class _LeaderboardState extends State<Leaderboard> {
           }
 
           // Sort the students based on total calories burned
-          students.sort((a, b) =>
-              (b.countTotalCalories ?? 0).compareTo(a.countTotalCalories ?? 0));
+          students.sort((a, b) => (b.countTotalCalories ?? 0).compareTo(a.countTotalCalories ?? 0));
 
           return Scaffold(
             body: ListView(

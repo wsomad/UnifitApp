@@ -151,22 +151,24 @@ class _CreateGoalState extends State<CreateGoal> {
 
                   DatabaseReference ref = FirebaseDatabase.instance.ref(
                       'students/${studentUser.uid}/execute/week $week/day $day/Goals');
-
                   if (_formKey.currentState!.validate()) {
                     if (exerciseController.text.isNotEmpty) {
                       widget.addGoal(exerciseController.text);
-                      await ref.update(
-                          {"targetNoOfExercise": exerciseController.text});
+                      await ref.update({
+                        "targetNoOfExercise": exerciseController.text,
+                      });
                     }
                     if (timeController.text.isNotEmpty) {
                       widget.addGoal(timeController.text);
-                      await ref
-                          .update({"targetTimeSpent": timeController.text});
+                      await ref.update({
+                        "targetTimeSpent": timeController.text,
+                      });
                     }
                     if (caloriesController.text.isNotEmpty) {
                       widget.addGoal(caloriesController.text);
-                      await ref.update(
-                          {"targetCaloriesBurned": caloriesController.text});
+                      await ref.update({
+                        "targetCaloriesBurned": caloriesController.text,
+                      });
                     }
                   }
                 },

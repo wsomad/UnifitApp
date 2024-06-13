@@ -35,7 +35,6 @@ class AuthService {
           print("Successfully created student data in the database");
         } catch (databaseError) {
           print("Error storing data in the database: $databaseError");
-          // Handle the error as needed
           return false;
         }
       } 
@@ -43,11 +42,11 @@ class AuthService {
         print("Failed to create user");
         return false;
       }
-
       return _checkStudent(newUser);
+    } on FirebaseAuthException catch (e) {
+      rethrow;
     } catch (e) {
-      print("Error during signup: $e");
-      return null;
+      rethrow;
     }
   }
 
@@ -119,7 +118,5 @@ class AuthService {
     } catch (e) {
       return false;
     }
-
   }
-
 }

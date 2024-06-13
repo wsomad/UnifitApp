@@ -29,7 +29,7 @@ class _ExerciseSetupState extends State<ExerciseSetup> {
   @override
   Widget build(BuildContext context) {
     if (widget.programName == 'Muscle Building' ||
-        widget.programName == 'Weight Lose') {
+        widget.programName == 'Weight Loss') {
       return BuildLoseBottomSheet(
         programName: widget.programName,
         selectedExercise: widget.selectedExercise,

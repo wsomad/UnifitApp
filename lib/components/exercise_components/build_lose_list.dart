@@ -29,6 +29,9 @@ class _BuildLoseListState extends State<BuildLoseList> {
     // Initialize the repsList based on the provided set and rep values
     repsList = List<int>.filled(widget.set, widget.rep);
     isSetDone = List<bool>.filled(widget.set, false);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.onRepsChanged(repsList);
+    });
   }
 
   void increaseReps(int rep) {
@@ -51,8 +54,6 @@ class _BuildLoseListState extends State<BuildLoseList> {
     }
     widget.onRepsChanged(repsList);
   }
-
-  void addSet() {}
 
   @override
   Widget build(BuildContext context) {

@@ -262,7 +262,8 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
                                 Text(
                                   exerciseEquipment,
                                   style: const TextStyle(
-                                      fontSize: 15, fontWeight: FontWeight.bold),
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ],
                             ),
@@ -270,7 +271,9 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20,),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     Column(
                       children: [
                         Row(
@@ -304,7 +307,9 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 20,),
+                        const SizedBox(
+                          height: 30,
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -355,54 +360,57 @@ class _ExerciseDetailsState extends State<ExerciseDetails> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 20,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                left: BorderSide(color: greenColor, width: 2),
-                              )),
-                              child: const Row(
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(15),
+                          decoration: BoxDecoration(
+                            color: grey100Color,
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  SizedBox(
-                                    width: 10,
+                                  Text(
+                                    'Estimated Calories Burned',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: greenColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Estimated Calories Burned',
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Text(
-                                        '(In 30 min)',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
+                                  Text(
+                                    '(In 30 min)',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: greenColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ],
                               ),
-                            ),
-                            Text(
-                              caloriesBurned,
-                              style: const TextStyle(
-                                fontSize: 16,
-                              ),
-                            )
-                          ],
+                              Text(
+                                caloriesBurned,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: greenColor,
+                                  fontWeight: FontWeight.bold
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                        const SizedBox(height: 20,),
+                        const SizedBox(
+                          height: 30,
+                        ),
                       ],
                     ),
-                    const SizedBox(height: 20,),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

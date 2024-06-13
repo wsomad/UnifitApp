@@ -72,37 +72,6 @@ class _GridProfileBadgeState extends State<GridProfileBadge> {
                 );
             },
           );
-
-          /*
-          Student student = snapshot.data!;
-          var badge = student.badge;
-          var badgeImage = student?.badgeImagePath;
-          print('image $badgeImage');
-          var badgeName = student?.badgeName;
-          print('Name: $badgeName');
-
-          var image = "assets/images/60-walker.png";
-          // Data is available, build your widget
-          return GridView.count(
-            crossAxisCount: 3, // Number of columns
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            children: [
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Image.asset(
-                      image, // Assuming imagePath is the path to the badge image
-                      height: 80,
-                      width: 80,
-                    ),
-                  ),
-                  Text('test'), // Assuming name is the name of the badge
-                ],
-              ),
-            ],
-          );*/
         }
       }
     );

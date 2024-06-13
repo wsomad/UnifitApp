@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:mhs_application/components/custom_dialogs/custom_validation_dialog.dart';
 import 'package:mhs_application/components/exercise_components/build_lose_list.dart';
 import 'package:mhs_application/components/exercise_components/bottom_sheets/rest_bottom_sheet.dart';
 import 'package:mhs_application/models/exercise.dart';
@@ -50,9 +51,11 @@ class _BuildLoseExecutionState extends State<BuildLoseExecution> {
   List<int> finalReps = [];
 
   void updateReps(List<int> updatedReps) {
-    setState(() {
-      finalReps = updatedReps;
-    });
+    if (mounted) {
+      setState(() {
+        finalReps = updatedReps;
+      });
+    }
   }
 
   @override
@@ -128,8 +131,27 @@ class _BuildLoseExecutionState extends State<BuildLoseExecution> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).pop();
+                              onTap: () async {
+                                // Show confirmation dialog
+                                bool? confirm = await showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context) {
+                                    return CustomValidationDialog(
+                                      title: 'Confirmation',
+                                      message: 'Are you sure you want to leave this screen?',
+                                      onYesPressed: () {
+                                        Navigator.of(context).pop(true); // Return true to indicate confirmation
+                                      },
+                                    );
+                                  },
+                                );
+                                if (confirm == null) {
+                                  return; // Exit without further action
+                                }
+                                if (confirm == true) {
+                                  Navigator.of(context).pop(); // If confirmed, pop the Navigator stack
+                                }
                               },
                               child: Padding(
                                 padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
