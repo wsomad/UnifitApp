@@ -7,7 +7,7 @@ import 'package:mhs_application/screens/primary/bottom_navigation_bar.dart';
 import 'package:mhs_application/components/exercise_components/exercise_setup.dart';
 import 'package:mhs_application/models/exercise.dart';
 import 'package:mhs_application/models/student.dart';
-import 'package:mhs_application/services/student_database.dart';
+import 'package:mhs_application/services/databases/student_database.dart';
 import 'package:mhs_application/shared/constant.dart';
 import 'package:provider/provider.dart';
 

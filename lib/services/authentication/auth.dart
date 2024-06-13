@@ -2,8 +2,8 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mhs_application/models/student.dart';
-import 'package:mhs_application/services/database.dart';
-import 'package:mhs_application/services/student_database.dart';
+import 'package:mhs_application/services/databases/database.dart';
+import 'package:mhs_application/services/databases/student_database.dart';
 
 class AuthService {
 

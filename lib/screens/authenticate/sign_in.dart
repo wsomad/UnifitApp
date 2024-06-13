@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // Tambah ni untuk PlatformException
 import 'package:mhs_application/screens/authenticate/personal.dart';
 import 'package:mhs_application/screens/authenticate/sign_up.dart';
-import 'package:mhs_application/services/auth.dart';
+import 'package:mhs_application/services/authentication/auth.dart';
 import 'package:mhs_application/screens/primary/bottom_navigation_bar.dart';
 import 'package:mhs_application/shared/constant.dart';
 

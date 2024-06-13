@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mhs_application/screens/authenticate/sign_in.dart';
 import 'package:mhs_application/screens/secondary/profile_screens/edit_email_password.dart';
 import 'package:mhs_application/screens/secondary/profile_screens/edit_profile.dart';
-import 'package:mhs_application/services/auth.dart';
+import 'package:mhs_application/services/authentication/auth.dart';
 import 'package:mhs_application/shared/constant.dart';
 import 'package:mhs_application/components/custom_dialogs/custom_delete_dialog.dart';
 

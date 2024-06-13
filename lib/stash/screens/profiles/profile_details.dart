@@ -3,12 +3,12 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mhs_application/components/profile_components/grid_badge.dart';
-import 'package:mhs_application/components/profile_components/grid_post.dart';
+import 'package:mhs_application/stash/screens/profiles/grid_badge.dart';
+import 'package:mhs_application/stash/screens/profiles/grid_post.dart';
 import 'package:mhs_application/components/profile_components/profile_bottom_sheet.dart';
 import 'package:mhs_application/models/student.dart';
-import 'package:mhs_application/services/image_database.dart';
-import 'package:mhs_application/services/student_database.dart';
+import 'package:mhs_application/stash/services/image_database.dart';
+import 'package:mhs_application/services/databases/student_database.dart';
 import 'package:mhs_application/shared/constant.dart';
 import 'package:provider/provider.dart';
 

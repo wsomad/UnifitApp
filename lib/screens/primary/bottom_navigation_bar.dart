@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:mhs_application/screens/primary/activity.dart';
 import 'package:mhs_application/screens/primary/program.dart';
-import 'package:mhs_application/screens/primary/home.dart';
-import 'package:mhs_application/screens/primary/profile.dart';
+import 'package:mhs_application/stash/screens/homes/home.dart';
+import 'package:mhs_application/stash/screens/profiles/profile.dart';
 import 'package:mhs_application/shared/constant.dart';
 
 class BottomNavigationBarShared extends StatefulWidget {

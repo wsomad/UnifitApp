@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mhs_application/screens/authenticate/sign_in.dart';
-import 'package:mhs_application/services/auth.dart';
+import 'package:mhs_application/services/authentication/auth.dart';
 import 'package:mhs_application/shared/constant.dart';
 
 class CustomDeleteDialog extends StatelessWidget {

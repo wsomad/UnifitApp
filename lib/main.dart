@@ -8,7 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart';
 import 'package:mhs_application/models/student.dart';
 import 'package:mhs_application/screens/wrapper.dart';
-import 'package:mhs_application/services/auth.dart';
+import 'package:mhs_application/services/authentication/auth.dart';
 import 'package:provider/provider.dart';
 
 void main() async {

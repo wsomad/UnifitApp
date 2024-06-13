@@ -1,9 +1,9 @@
 // ignore_for_file: use_build_context_synchronously, avoid_print
 
 import 'package:flutter/material.dart';
-import 'package:mhs_application/components/home_components/post_card.dart';
+import 'package:mhs_application/stash/screens/homes/post_card.dart';
 import 'package:mhs_application/models/exercise_execution.dart';
-import 'package:mhs_application/screens/secondary/home_screens/posting.dart';
+import 'package:mhs_application/stash/screens/homes/posting.dart';
 import 'package:mhs_application/shared/constant.dart';
 import 'package:mhs_application/components/custom_dialogs/custom_bmi_dialog.dart';
 

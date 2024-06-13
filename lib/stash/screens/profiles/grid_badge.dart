@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mhs_application/models/badges.dart';
 import 'package:mhs_application/models/exercise_execution.dart';
-import 'package:mhs_application/services/student_database.dart';
+import 'package:mhs_application/services/databases/student_database.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/student.dart';
+import '../../../models/student.dart';
 
 class GridProfileBadge extends StatefulWidget {
   const GridProfileBadge({super.key});

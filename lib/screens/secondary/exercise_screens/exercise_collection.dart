@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
-import 'package:mhs_application/services/exercise_database.dart';
+import 'package:mhs_application/services/databases/exercise_database.dart';
 import 'package:mhs_application/screens/primary/bottom_navigation_bar.dart';
 import 'package:mhs_application/components/exercise_components/exercise_card_vertical.dart';
 import 'package:mhs_application/models/exercise.dart';

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mhs_application/models/exercise_execution.dart';
 import 'package:mhs_application/models/student.dart';
-import 'package:mhs_application/services/student_database.dart';
+import 'package:mhs_application/services/databases/student_database.dart';
 import 'package:mhs_application/shared/constant.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';

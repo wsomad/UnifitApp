@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mhs_application/screens/secondary/profile_screens/profile_details.dart';
+import 'package:mhs_application/stash/screens/profiles/profile_details.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});

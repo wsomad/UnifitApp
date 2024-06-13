@@ -1,7 +1,7 @@
 // ignore_for_file: unnecessary_brace_in_string_interps, avoid_print
 
 import 'package:flutter/material.dart';
-import 'package:mhs_application/screens/secondary/home_screens/home_list.dart';
+import 'package:mhs_application/stash/screens/homes/home_list.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});

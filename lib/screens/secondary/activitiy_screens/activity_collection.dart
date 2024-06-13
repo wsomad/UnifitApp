@@ -6,7 +6,7 @@ import 'package:mhs_application/models/student.dart';
 import 'package:mhs_application/screens/secondary/activitiy_screens/badges_collection.dart';
 import 'package:mhs_application/screens/secondary/activitiy_screens/leaderboard.dart';
 import 'package:mhs_application/screens/secondary/activitiy_screens/weekly_progression.dart';
-import 'package:mhs_application/services/student_database.dart';
+import 'package:mhs_application/services/databases/student_database.dart';
 import 'package:mhs_application/shared/constant.dart';
 import 'package:mhs_application/components/custom_dialogs/custom_bmi_dialog.dart';
 import 'package:provider/provider.dart';
